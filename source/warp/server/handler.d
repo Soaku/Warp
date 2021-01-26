@@ -120,6 +120,7 @@ class Handler {
         catch (StatusException status) {
 
             response.status = status.msg;
+            response.content = cast(ubyte[]) status.msg;
             flush();
 
         }
@@ -128,6 +129,7 @@ class Handler {
         catch (Exception exception) {
 
             response.status = "500 Server Error";
+            response.content = cast(ubyte[]) "500 Server Error";
             flush();
 
             // Rethrow the exception

@@ -3,6 +3,10 @@ module warp.structs;
 import std.conv;
 import std.json;
 import std.meta;
+import std.array;
+import std.algorithm;
+
+import warp.server.structs;
 
 enum Color {
 
@@ -82,6 +86,46 @@ struct Message {
 
 
         }
+
+    }
+
+    /// Create a content message
+    static addContent(string text, ubyte level = 0, Color color = Color.white) {
+
+        return Message(MessageType.addContent, level, color, text);
+
+    }
+
+}
+
+/// Context
+struct Context {
+
+    /// Parent request
+    Request request;
+
+    /// Response data
+    Response* response;
+
+    /// URL parts
+    string[] urlParts;
+
+    alias request this;
+
+    this(Request request, ref Response response) {
+
+        this.request = request;
+        this.response = &response;
+        this.urlParts = request.path.splitter("/").filter!(a => a != "").array;
+
+    }
+
+    /// Get a param from the URL, if exists, or return a default value.
+    string param(size_t index, string def = null) const {
+
+        return index < urlParts.length
+            ? urlParts[index]
+            : def;
 
     }
 
