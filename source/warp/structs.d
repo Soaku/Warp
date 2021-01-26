@@ -11,6 +11,7 @@ import warp.server.structs;
 enum Color {
 
     white,
+    theme,
     red,
     green,
     yellow,
@@ -26,7 +27,7 @@ alias ColoredText = AliasSeq!(Color, string);
 enum MessageType {
 
     /// URL path has changed. [string path]
-    pathChange,
+    changePath,
 
     /// Push new content text. [ubyte level, ColoredText content], 0 = `<p>`, 1 = `<h1>`.
     addContent,
@@ -41,7 +42,10 @@ enum MessageType {
     mapLineHeight,
 
     /// Moved to a different area. [string areaName]
-    areaChange,
+    changeArea,
+
+    /// Change theme. [Color theme]
+    changeTheme,
 
 }
 
@@ -81,8 +85,10 @@ struct Message {
 
             import std.stdio;
 
-            assert(Message(pathChange, "/").serialize == `["pathChange","\/"]`);
-            assert(Message(addContent, 0, "Hello, World!").serialize == `["addContent",0,"Hello, World!"]`);
+            assert(Message(pathChange, "/").serialize
+                == `["pathChange","\/"]`);
+            assert(Message.addContent("Hello, World!").serialize
+                == `["addContent",0,0,"Hello, World!"]`);
 
 
         }
@@ -96,19 +102,29 @@ struct Message {
 
     }
 
+    /// Change the theme
+    static changeTheme(Color color) {
+
+        return Message(MessageType.changeTheme, color);
+
+    }
+
 }
 
 /// Context
 struct Context {
 
-    /// Parent request
+    /// Parent request.
     Request request;
 
-    /// Response data
+    /// Response data.
     Response* response;
 
-    /// URL parts
+    /// URL parts.
     string[] urlParts;
+
+    /// Current theme.
+    auto theme = Color.cyan;
 
     alias request this;
 

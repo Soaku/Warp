@@ -6,7 +6,7 @@ import std.conv;
 import warp.structs;
 import warp.server.structs;
 
-string htmlTemplate(Response response, Element body) {
+string htmlTemplate(const Context context, Element body) {
 
     return Element.HTMLDoctype ~ elem!"html"(
 
@@ -14,8 +14,8 @@ string htmlTemplate(Response response, Element body) {
 
             // Page metadata
             elem!"title"(
-                response.title
-                    ? text(response.title, " — WARP")
+                context.response.title
+                    ? text(context.response.title, " — WARP")
                     : "WARP"
             ),
 
@@ -52,11 +52,11 @@ string htmlTemplate(Response response, Element body) {
                     // Navigation items
                     elem!"nav"(
 
-                        "Home"         .elem!("a", q{ href="/" }),
-                        "Characters"   .elem!("a", q{ href="/characters" }),
-                        "Owned worlds" .elem!("a", q{ href="/worlds/make" }),
-                        "Public worlds".elem!("a", q{ href="/worlds/public" }),
-                        "Friends"      .elem!("a", q{ href="/friends" }),
+                        context.link("Home", "/"),
+                        context.link("Characters", "/characters"),
+                        context.link("Owned worlds", "/worlds"),
+                        context.link("Public worlds", "/worlds/public"),
+                        context.link("Friends", "/worlds/friends"),
 
                     ),
 
@@ -88,9 +88,7 @@ string htmlTemplate(Response response, Element body) {
 
 }
 /// Display the given message list.
-///
-/// Effect of this is limited, some of the features only work from JS.
-Element display(Message[] messages) {
+Element display(ref Context context, Message[] messages) {
 
     Element elements;
 
@@ -102,7 +100,8 @@ Element display(Message[] messages) {
             // Add content
             case MessageType.addContent:
 
-                auto attributes = ["class": message.content[1].get!int.to!Color.to!string];
+                auto color = message.content[1].get!Color;
+                auto attributes = ["class": to!string(color == Color.theme ? context.theme : color)];
 
                 sw: final switch (message.content[0].get!int) {
 
@@ -125,6 +124,13 @@ Element display(Message[] messages) {
 
                 break;
 
+            // Change theme
+            case MessageType.changeTheme:
+
+                context.theme = message.content[0].get!Color;
+
+                break;
+
             default: break;
 
         }
@@ -132,5 +138,11 @@ Element display(Message[] messages) {
     }
 
     return elements;
+
+}
+
+private Element link(const Context context, string content, string href) {
+
+    return elem!"a"(["class": context.theme.to!string, "href": href], content);
 
 }

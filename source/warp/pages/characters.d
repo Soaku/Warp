@@ -6,7 +6,7 @@ import warp.structs;
 Message[] serveCharacters(const Context) {
 
     return [
-        Message.addContent("Your characters:", 1, Color.cyan),
+        Message.addContent("Your characters:", 1, Color.theme),
     ];
 
 }

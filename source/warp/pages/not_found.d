@@ -3,7 +3,7 @@ module warp.pages.not_found;
 import warp.structs;
 
 /// Serve the 404 page
-Message[] serveNotFound(Context context) {
+Message[] serveNotFound(ref Context context) {
 
     context.response.status = "404 Not Found";
 

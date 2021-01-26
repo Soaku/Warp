@@ -11,7 +11,7 @@ public {
 
 }
 
-Message[] route(Context context) {
+Message[] route(ref Context context) {
 
     switch (context.param(0)) {
 

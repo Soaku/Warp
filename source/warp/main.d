@@ -33,9 +33,10 @@ void main(string[] argv) {
             // Create context
             auto context = Context(request, response);
             auto messages = context.route();
+            auto html = context.display(messages);
 
             // Write the content
-            response.content = cast(ubyte[]) response.htmlTemplate(messages.display);
+            response.content = cast(ubyte[]) context.htmlTemplate(html);
         }
 
     };
