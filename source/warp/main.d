@@ -3,10 +3,11 @@ module warp.main;
 import elemi;
 import std.conv;
 
+import warp.home;
+import warp.html;
 import warp.server;
 import warp.scripts;
 import warp.file_sender;
-import warp.html_template;
 
 void main(string[] argv) {
 
@@ -28,15 +29,8 @@ void main(string[] argv) {
             // Serve files in debug
             debug if (fileSender(request, response)) return;
 
-            import std.stdio : writeln;
-            writeln(request.method, " ", request.path);
-
-            auto body = elem!"p"(
-
-                "Hello, World!"
-
-            );
-
+            // Serve the home page
+            const body = serveHome(request).display;
 
             // Write the content
             response.content = cast(ubyte[]) response.htmlTemplate(body);
