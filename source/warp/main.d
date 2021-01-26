@@ -4,6 +4,7 @@ import elemi;
 import std.conv;
 
 import warp.server;
+import warp.scripts;
 import warp.file_sender;
 import warp.html_template;
 
@@ -12,6 +13,10 @@ void main(string[] argv) {
     // Get the connection port
     const port = argv.length > 1 ? argv[1].to!ushort : 8080;
 
+    // Generate scripts
+    debug generateScripts();
+
+    // Prepare the server
     ServerOptions server = {
 
         address: new InternetAddress("127.0.0.1", port),
@@ -20,7 +25,7 @@ void main(string[] argv) {
 
             response.addHeader("Server", "wrap/1.0");
 
-            // Server files in debug
+            // Serve files in debug
             debug if (fileSender(request, response)) return;
 
             import std.stdio : writeln;

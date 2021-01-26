@@ -1,3 +1,23 @@
 body {
 
+    /* Default text params */
+    font-family: monospace;
+    background: #1c1c1c;
+    color: #fff;
+
 }
+
+.requires-js {
+
+    display: none;
+
+}
+
+/* Default colors */
+.red     { color: #f2201f }
+.green   { color: #23fd00 }
+.yellow  { color: #fffd00 }
+.blue    { color: #1a8fff }
+.magenta { color: #fd28ff }
+.cyan    { color: #14ffff }
+.white   { color: #ffffff }

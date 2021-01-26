@@ -1,0 +1,1 @@
+document.byClass = document.getElementsByClassName;
