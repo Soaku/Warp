@@ -1,0 +1,17 @@
+{
+	"authors": [
+		"soaku"
+	],
+	"buildRequirements": [
+		"allowWarnings"
+	],
+	"copyright": "Copyright © 2021, soaku",
+	"dependencies": {
+		"elemi": ">=1.0.1-beta <1.1.0-0"
+	},
+	"description": "WARP — Web Action Random Role-Playing game",
+	"license": "GPL-3.0",
+	"name": "warp",
+	"targetPath": "build",
+	"targetType": "executable"
+}
