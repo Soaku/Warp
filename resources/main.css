@@ -93,21 +93,32 @@ p {
 
 }
 
-a.box-link {
+.box-link {
 
     display: inline-block;
     vertical-align: top;
+    box-sizing: content-box;
 
     width: 60px;
     margin: 10px;
     padding: 10px;
+    border: none;
     border-radius: 5px;
     background: #fff1;
 
     color: white;
-    font-size: 0.6em;
+    font-family: inherit;
+    font-size: 8pt;
     text-align: center;
     text-decoration: none;
+
+    cursor: pointer;
+
+}
+
+button.box-link {
+
+    font-weight: bold;
 
 }
 
@@ -192,12 +203,6 @@ main.column {
 
 }
 
-a.menu {
-
-    display: block;
-
-}
-
 a.menu img {
 
     display: block;
@@ -210,6 +215,13 @@ a.menu img {
 nav {
 
     overflow: hidden;
+
+}
+
+nav ul {
+
+    list-style: none;
+    padding-left: 0;
 
 }
 

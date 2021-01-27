@@ -37,6 +37,9 @@ class Handler {
         /// Current line
         string line;
 
+        /// Remaining POST content length
+        size_t contentLeft;
+
     }
 
     this(ServerOptions options, Socket socket) {
@@ -88,6 +91,22 @@ class Handler {
 
                 import std.algorithm : findSplit;
 
+                // If this is the body phase
+                if (phase == Phase.body) {
+
+                    line ~= content;
+
+                    // Submitted all
+                    if (content.length >= contentLeft) parseLine();
+
+                    // Still waiting for content
+                    else contentLeft -= content.length;
+
+                    return;
+
+
+                }
+
                 // Find the split
                 if (auto split = content.findSplit("\n")) {
 
@@ -108,7 +127,7 @@ class Handler {
 
                     // Append to this line
                     line ~= content;
-                    break;
+                    continue;
 
                 }
 
@@ -257,12 +276,20 @@ class Handler {
 
                     // Advance stage
                     phase = Phase.body;
-                    goto case;
+                    try contentLeft = request.headers.get("content-length", "0").to!size_t;
+
+                    // bruh
+                    catch (ConvException) throw new StatusException("400 Bad Request");
+
+                    // No content was sent, respond
+                    if (contentLeft == 0) respond();
+
+                    break;
 
                 }
 
                 const key = line.until(":").to!string.toLower.stripRight;
-                const value = line[key.length .. $].stripLeft;
+                const value = line[key.length+1 .. $].stripLeft;
 
                 request.headers[key] = value;
                 break;
@@ -271,7 +298,54 @@ class Handler {
 
             case Phase.body: {
 
-                // Ignore the body, for now.
+                string key, value;
+                bool parsingValue;
+
+                void submitPair() {
+
+                    import std.uri : decodeComponent;
+
+                    // Ignore if there's no key
+                    if (key == "") return;
+
+                    // Add the data
+                    request.body[key.decodeComponent] = value.decodeComponent;
+
+                    key = value = "";
+                    parsingValue = false;
+
+                }
+
+                // Check each character on the line
+                foreach (ch; line) {
+
+                    switch (ch) {
+
+                        // Begin value
+                        case '=':
+                            parsingValue = true;
+                            break;
+
+                        // Submit pair
+                        case '&':
+                            submitPair();
+                            break;
+
+                        // Other characters
+                        default:
+
+                            // Add the character
+                            if (parsingValue) value ~= ch;
+                            else key ~= ch;
+
+                    }
+
+                }
+
+                // Submit the content
+                submitPair();
+
+                // Respond now
                 respond();
 
                 break;

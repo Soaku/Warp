@@ -37,7 +37,14 @@ string htmlTemplate(const Context context, Element body) {
 
         elem!"body"(
 
-            elem!("div", q{ class="body-wrapper" })(
+            elem!("form", q{ class="body-wrapper" method="POST" })(
+
+                // Add a hidden form item with the token
+                elem!("input")([
+                    "type": "hidden",
+                    "name": "action-token",
+                    "value": cast() context.user.actionToken,
+                ]),
 
                 // Navigation
                 elem!("div", q{ id="map-column" class="column" })(
@@ -60,11 +67,15 @@ string htmlTemplate(const Context context, Element body) {
                     // Navigation items
                     elem!"nav"(
 
-                        context.link("Home", "/"),
-                        context.link("Characters", "/characters"),
-                        context.link("Owned worlds", "/worlds"),
-                        context.link("Public worlds", "/worlds/public"),
-                        context.link("Friends", "/friends"),
+                        elem!"ul"(
+
+                            context.link("Home", "/")                       .elem!"li",
+                            context.link("Characters", "/characters")       .elem!"li",
+                            context.link("Owned worlds", "/worlds")         .elem!"li",
+                            context.link("Public worlds", "/worlds/public") .elem!"li",
+                            context.link("Friends", "/friends")             .elem!"li",
+
+                        )
 
                     ),
 
@@ -95,6 +106,13 @@ string htmlTemplate(const Context context, Element body) {
     );
 
 }
+
+private Element link(const Context context, string content, string href) {
+
+    return elem!"a"(["class": context.theme.to!string, "href": href], content);
+
+}
+
 /// Display the given message list.
 Element display(ref Context context, Message[] messages) {
 
@@ -135,20 +153,35 @@ Element display(ref Context context, Message[] messages) {
             // Add link
             case MessageType.addLink:
 
-                elements.add(
-                    elem!"a"(
-                        [
-                            "class": "box-link",
-                            "title": message.content[1].str,
-                            "href": message.content[2].str,
-                        ],
-                        elem!"img"([
-                            "src": "/resources/icons/" ~ message.content[0].str ~ ".png",
-                            "alt": ""
-                        ]),
-                        message.content[1].str,
-                    )
+                auto link = elem!"a"(
+                    [
+                        "class": "box-link",
+                        "title": message.content[1].str,
+                        "href": message.content[2].str,
+                    ],
                 );
+
+                link.addBoxContent(message.content[0].str, message.content[1].str);
+
+                // Add the link
+                elements.add(link);
+
+                break;
+
+            // Action button
+            case MessageType.addAction:
+
+                auto link = elem!"button"(
+                    [
+                        "class": "box-link",
+                        "name": "action",
+                        "value": message.content[2].str,
+                    ]
+                );
+                link.addBoxContent(message.content[0].str, message.content[1].str);
+
+                // Add the link
+                elements.add(link);
 
                 break;
 
@@ -169,8 +202,21 @@ Element display(ref Context context, Message[] messages) {
 
 }
 
-private Element link(const Context context, string content, string href) {
+private void addBoxContent(ref Element link, string icon, string text) {
 
-    return elem!"a"(["class": context.theme.to!string, "href": href], content);
+    // Add an icon
+    if (icon.length) {
+
+        link.add(
+            elem!"img"([
+                "src": "/resources/icons/" ~ icon ~ ".png",
+                "alt": ""
+            ])
+        );
+
+    }
+
+    // Add text
+    link.add(text);
 
 }

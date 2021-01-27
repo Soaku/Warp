@@ -1,7 +1,7 @@
 module warp.pages.worlds;
 
 import warp.structs;
-import warp.pages.not_found;
+import warp.pages.error;
 
 /// Route worlds
 Message[] serveWorlds(ref Context context) {
@@ -12,8 +12,10 @@ Message[] serveWorlds(ref Context context) {
         case "list":
             return context.listWorlds(WorldListFilter.owned);
 
-        case "public":
         case "create", "new":
+            return context.createWorld;
+
+        case "public":
             return context.serveNotImplemented;
 
         default: return context.serveNotFound;
@@ -36,7 +38,18 @@ Message[] listWorlds(ref Context context, WorldListFilter filter) {
         Message.addContent("You don't have any worlds... Create a new one!"),
         Message.addContent(),
         Message.addContent("Manage", 1, Color.cyan),
-        Message.addLink("plus", "Create a new world", "/worlds/new"),
+        Message.addLink("Create a new world", "/worlds/new", "plus"),
+    ];
+
+}
+
+/// Create a world
+Message[] createWorld(ref Context context) {
+
+    return [
+        Message.addContent("Do you really want to create this world?", 1, Color.cyan),
+        Message.addLink("Cancel", "/worlds", "cancel"),
+        Message.addAction("Do it", "type.regular", "confirm"),
     ];
 
 }

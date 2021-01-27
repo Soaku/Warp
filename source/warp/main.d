@@ -25,7 +25,7 @@ void main(string[] argv) {
 
         handler: (request, ref response) {
 
-            response.addHeader("Server", "wrap/1.0");
+            response.addHeader("Server", "warp/1.0");
 
             // Serve files in debug
             debug if (fileSender(request, response)) return;
