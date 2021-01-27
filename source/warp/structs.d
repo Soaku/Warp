@@ -29,8 +29,11 @@ enum MessageType {
     /// URL path has changed. [string path]
     changePath,
 
-    /// Push new content text. [ubyte level, ColoredText content], 0 = `<p>`, 1 = `<h1>`.
+    /// Push new content text. [ubyte level, ColoredText content], 0 = `<p>`, 1 = `<h1>`, n = `<hn>`.
     addContent,
+
+    /// Add a link. [string icon, string text, string href]
+    addLink,
 
     /// Change the user position on the map. [ubyte x, ubyte y]
     mapPosition,
@@ -72,10 +75,9 @@ struct Message {
 
     }
 
-    string serialize() {
+    JSONValue serialize() {
 
-        auto arr = JSONValue([type.to!string].JSONValue ~ content);
-        return arr.toJSON;
+        return JSONValue([type.to!string].JSONValue ~ content);
 
     }
 
@@ -96,9 +98,16 @@ struct Message {
     }
 
     /// Create a content message
-    static addContent(string text, ubyte level = 0, Color color = Color.white) {
+    static addContent(string text = "", ubyte level = 0, Color color = Color.white) {
 
         return Message(MessageType.addContent, level, color, text);
+
+    }
+
+    /// Create a link
+    static addLink(string icon, string text, string href) {
+
+        return Message(MessageType.addLink, icon, text, href);
 
     }
 

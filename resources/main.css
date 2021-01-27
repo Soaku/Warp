@@ -53,6 +53,14 @@ body {
 
 }
 
+img {
+
+    width: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+
+}
+
 h1, h2, h3, h4, h5, h6 {
 
     margin: 0;
@@ -81,6 +89,25 @@ h1.area {
 p {
 
     margin: 0;
+    min-height: 1em;
+
+}
+
+a.box-link {
+
+    display: inline-block;
+    vertical-align: top;
+
+    width: 60px;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background: #fff1;
+
+    color: white;
+    font-size: 0.6em;
+    text-align: center;
+    text-decoration: none;
 
 }
 
@@ -120,13 +147,38 @@ main.column {
 
     }
 
+    nav {
+
+        max-height: 0;
+        transition: max-height 0.2s;
+
+    }
+
+    a.menu:active + nav, a.menu:focus + nav, nav:focus-within {
+
+        max-height: 500px;
+        transition: max-height 0.4s;
+
+    }
+
 }
 
-/* Map column */
+@media (min-width: 901px) {
+
+    .mobile {
+
+        display: none;
+
+    }
+
+}
+
+/* Navigation column */
 
 #map {
 
     height: 300px;
+    line-height: 300px;
     position: relative;
 
 }
@@ -137,6 +189,27 @@ main.column {
     height: 100%;
     position: absolute;
     /*animation: portal 10s infinite linear;*/
+
+}
+
+a.menu {
+
+    display: block;
+
+}
+
+a.menu img {
+
+    display: block;
+    margin: 0 auto 20px auto;
+    height: 12px;
+    max-width: 150px;
+
+}
+
+nav {
+
+    overflow: hidden;
 
 }
 

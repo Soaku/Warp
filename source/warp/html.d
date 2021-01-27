@@ -49,6 +49,14 @@ string htmlTemplate(const Context context, Element body) {
 
                     ),
 
+                    elem!("a", q{ class="mobile menu" href="javascript:void(0)" })(
+
+                        elem!("img", q{
+                            alt="Menu" src="/resources/icons/menu.png"
+                        })
+
+                    ),
+
                     // Navigation items
                     elem!"nav"(
 
@@ -56,7 +64,7 @@ string htmlTemplate(const Context context, Element body) {
                         context.link("Characters", "/characters"),
                         context.link("Owned worlds", "/worlds"),
                         context.link("Public worlds", "/worlds/public"),
-                        context.link("Friends", "/worlds/friends"),
+                        context.link("Friends", "/friends"),
 
                     ),
 
@@ -121,6 +129,26 @@ Element display(ref Context context, Message[] messages) {
                     }
 
                 }
+
+                break;
+
+            // Add link
+            case MessageType.addLink:
+
+                elements.add(
+                    elem!"a"(
+                        [
+                            "class": "box-link",
+                            "title": message.content[1].str,
+                            "href": message.content[2].str,
+                        ],
+                        elem!"img"([
+                            "src": "/resources/icons/" ~ message.content[0].str ~ ".png",
+                            "alt": ""
+                        ]),
+                        message.content[1].str,
+                    )
+                );
 
                 break;
 

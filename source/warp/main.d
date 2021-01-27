@@ -33,10 +33,33 @@ void main(string[] argv) {
             // Create context
             auto context = Context(request, response);
             auto messages = context.route();
-            auto html = context.display(messages);
 
-            // Write the content
-            response.content = cast(ubyte[]) context.htmlTemplate(html);
+            // If responding with HTML
+            if (context.response.contentType == "text/html") {
+
+                auto html = context.display(messages);
+
+                // Write the content
+                response.content = cast(ubyte[]) context.htmlTemplate(html);
+
+            }
+
+            // Responding with JSON
+            else if (context.response.contentType == "application/json") {
+
+                import std.json : JSONValue, toJSON;
+                import std.array : array;
+                import std.algorithm : map;
+
+                auto json = messages
+                    .map!(a => a.serialize)
+                    .array
+                    .JSONValue;
+
+                response.content = cast(ubyte[]) json.toJSON;
+
+            }
+
         }
 
     };

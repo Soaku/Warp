@@ -13,3 +13,13 @@ Message[] serveNotFound(ref Context context) {
     ];
 
 }
+
+/// Serve the page
+Message[] serveNotImplemented(ref Context context) {
+
+    return [
+        Message.addContent("Not Implemented", 1, Color.yellow),
+        Message.addContent("Unable to warp, the page is still being built! This portal will open soon..."),
+    ];
+
+}

@@ -218,7 +218,7 @@ class Handler {
                         : Request.Method.invalid;
 
                     // Require it to be valid
-                    enforce!StatusException(request.method != Request.Method.invalid, "405 Method Not Allowed");
+                    enforce!StatusException(request.method != Request.Method.invalid, "501 Not Implemented");
                     // 405 implies the server knows the method, but there doesn't seem to be any better alternative
 
                 }
