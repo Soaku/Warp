@@ -2,6 +2,7 @@ module warp.main;
 
 import elemi;
 import std.conv;
+import std.concurrency;
 
 import warp.html;
 import warp.server;
@@ -9,6 +10,13 @@ import warp.handle;
 import warp.scripts;
 import warp.structs;
 import warp.file_sender;
+import warp.worlds.worldgen;
+
+static {
+
+    Tid worldgen;
+
+}
 
 void main(string[] argv) {
 
@@ -17,6 +25,9 @@ void main(string[] argv) {
 
     // Generate scripts
     debug generateScripts();
+
+    // Start secondary threads
+    worldgen = spawn(&startWorldgen);
 
     // Prepare the server
     ServerOptions server = {

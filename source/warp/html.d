@@ -14,6 +14,12 @@ public import warp.display_api;
 
 string htmlTemplate(const Context context, const APIData api) {
 
+    // Theme is grey, make the profile color grey too
+    auto profileTheme = context.theme == Color.grey ? "grey"
+
+        // Make it yellow otherwise
+        : "yellow";
+
     return Element.HTMLDoctype ~ elem!"html"(
 
         elem!"head"(
@@ -68,10 +74,10 @@ string htmlTemplate(const Context context, const APIData api) {
 
                     ),
 
-                    elem!("a", q{ class="mobile menu" href="javascript:void(0)" })(
+                    elem!("a", q{ class="mobile menu" href="javascript:void(0)" title="Menu" })(
 
                         elem!("img", q{
-                            alt="Menu" src="/resources/icons/menu.png"
+                            alt="" src="/resources/icons/menu.png"
                         })
 
                     ),
@@ -96,10 +102,14 @@ string htmlTemplate(const Context context, const APIData api) {
                 // Main content
                 elem!("main", q{ class="column" })(
 
-                    elem!("div", q{ id="profile" class="yellow" })(
+                    elem!"div"(
+                        ["id": "profile", "class": profileTheme],
 
                         // User
-                        "Anonymous".elem!("a", q{ href="/user" class="yellow" }),
+                        elem!"a"(
+                            ["href": "/user", "class": profileTheme],
+                            "Anonymous"
+                        ),
                         "0 crystals".elem!("p", q{ style="float:right" }),
 
                         elem!("div", q{ class="progress-content" })

@@ -144,6 +144,9 @@ class Handler {
 
         }
 
+        // Release exception, rethrow
+        catch (HandleReleaseException exception) throw exception;
+
         // Handle other exceptions
         catch (Exception exception) {
 

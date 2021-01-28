@@ -293,6 +293,7 @@ nav a {
 }
 
 /* Default colors */
+.grey    { color: #767676 }
 .red     { color: #f2201f }
 .green   { color: #23fd00 }
 .yellow  { color: #fffd00 }
@@ -300,3 +301,6 @@ nav a {
 .magenta { color: #fd28ff }
 .cyan    { color: #14ffff }
 .white   { color: #ffffff }
+
+.grey    .progress { background: #767676 }
+.yellow  .progress { background: #fffd00 }

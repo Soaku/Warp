@@ -13,6 +13,7 @@ enum Color {
 
     white,
     theme,
+    grey,
     red,
     green,
     yellow,
@@ -26,6 +27,10 @@ alias ColoredText = AliasSeq!(Color, string);
 
 /// Type of the message sent
 enum MessageType {
+
+    /// Clear the content.
+    clearContent,
+    // TODO
 
     /// Push new content text. `[ubyte level, ColoredText content]`, 0 = `<p>`, 1 = `<h1>`, n = `<hn>`.
     addContent,
@@ -57,9 +62,16 @@ enum MessageType {
     changeArea,
     // TODO
 
-    /// Change theme. `[Color theme]`
-    changeTheme,
+    /// Set theme for this page. `[Color theme]`
+    setTheme,
     // Implemented: server (yes); TODO client
+
+    /// Listen to events under given name. `[string name]`
+    ///
+    /// Make a TCP connection to `/api/events/<name>`, wait for response and evaluate given messages. Repeat until
+    /// the same opcode is sent with an empty name.
+    listen,
+    // Implemented: server (yes, via <noscript>), TODO client
 
 }
 
@@ -111,6 +123,13 @@ struct Message {
     // Main content
     struct {
 
+        /// Clear the content
+        static clearContent() {
+
+            return Message(MessageType.clearContent);
+
+        }
+
         /// Create a content message
         static addContent(string text = "", ubyte level = 0, Color color = Color.white) {
 
@@ -151,9 +170,16 @@ struct Message {
     }
 
     /// Change the theme
-    static changeTheme(Color color) {
+    static setTheme(Color color) {
 
-        return Message(MessageType.changeTheme, color);
+        return Message(MessageType.setTheme, color);
+
+    }
+
+    /// Listen to an event provider
+    static listen(string name) {
+
+        return Message(MessageType.listen, name);
 
     }
 

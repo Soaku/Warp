@@ -2,6 +2,7 @@ module warp.pages.worlds;
 
 import warp.structs;
 import warp.pages.error;
+import warp.pages.worldgen;
 
 /// Route worlds
 Message[] serveWorlds(ref Context context) {
@@ -13,7 +14,7 @@ Message[] serveWorlds(ref Context context) {
             return context.listWorlds(WorldListFilter.owned);
 
         case "create", "new":
-            return context.createWorld;
+            return context.serveWorldgen;
 
         case "public":
             return context.serveNotImplemented;
@@ -33,28 +34,14 @@ enum WorldListFilter {
 /// List worlds
 Message[] listWorlds(ref Context context, WorldListFilter filter) {
 
+    with (Message)
     return [
-        Message.addContent("Your worlds", 1, Color.cyan),
-        Message.addContent("You don't have any worlds... Create a new one!"),
-        Message.addContent(),
-        Message.addContent("Manage", 1, Color.cyan),
-        Message.addLink("Create a new world", "/worlds/new", "plus"),
-    ];
+        addContent("Your worlds", 1, Color.cyan),
+        addContent("You don't have any worlds... Create a new one!"),
+        addContent(),
 
-}
-
-/// Create a world
-Message[] createWorld(ref Context context) {
-
-    import std.conv, std.range, std.array;
-
-    return [
-        Message.addContent("Do you really want to create this world?", 1, Color.cyan),
-        Message.addLink("Cancel", "/worlds", "cancel"),
-        Message.addAction("Do it", "type.regular", "confirm"),
-
-        // Solely for testing, remove later
-        Message.mapLineHeight(50, 100.to!ubyte.iota.array),
+        addContent("Manage", 1, Color.cyan),
+        addLink("Create a new world", "/worlds/new", "plus"),
     ];
 
 }

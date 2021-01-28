@@ -2,6 +2,7 @@ module warp.server.listener;
 
 import std.conv;
 import std.socket;
+import std.algorithm;
 import std.concurrency;
 
 import warp.server.handler;
@@ -35,8 +36,6 @@ void start(ServerOptions options) {
         socketSet.add(listener);
         foreach_reverse (i, ref connection; connections) {
 
-            import std.algorithm : remove;
-
             // Check the status of the socket
             if (connection.socket.isAlive) {
 
@@ -53,7 +52,7 @@ void start(ServerOptions options) {
         Socket.select(socketSet, null, null);
 
         // Listen to existing connections
-        foreach (i, ref connection; connections) {
+        foreach_reverse (i, ref connection; connections) {
 
             // Wait for data
             if (!socketSet.isSet(connection.socket)) continue;
@@ -62,6 +61,17 @@ void start(ServerOptions options) {
 
             // Fetch further data
             try connection.fetch();
+
+            // Handle released
+            catch (HandleReleaseException exc) {
+
+                // Release handle
+                connections = connections.remove(i);
+
+                // Run the callback
+                exc.callback(cast(shared) connection);
+
+            }
 
             // If failed, write the exception content
             catch (Exception exc) writeln(exc);

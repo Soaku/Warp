@@ -1,13 +1,28 @@
 module warp.server.structs;
 
-import elemi;
-
 import std.socket;
 import std.exception;
+
+import warp.server.handler;
 
 class StatusException : Exception {
 
     mixin basicExceptionCtors;
+
+}
+
+package class HandleReleaseException : Exception {
+
+    alias ServerCallback = void delegate(shared Handler);
+
+    ServerCallback callback;
+
+    this(ServerCallback callback) {
+
+        super("");
+        this.callback = callback;
+
+    }
 
 }
 
@@ -70,6 +85,15 @@ struct Response {
         import std.conv : text;
 
         headers ~= text(key, ": ", value, "\n");
+
+    }
+
+    /// Release this socket's `Handle` from the server's control and pass it to the given function as a shared object.
+    ///
+    /// This function ALWAYS throws, the exception is not meant to be caught, however.
+    void serverPass(HandleReleaseException.ServerCallback callback) {
+
+        throw new HandleReleaseException(callback);
 
     }
 

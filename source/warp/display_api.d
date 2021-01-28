@@ -113,9 +113,21 @@ struct APIData {
                 }
 
                 // Change theme
-                case MessageType.changeTheme: {
+                case MessageType.setTheme: {
 
                     context.theme = message.content[0].get!Color;
+
+                    break;
+
+                }
+
+                // Listener
+                case MessageType.listen: {
+
+                    body.add!("noscript", q{ class="yellow" })(
+                        elem!"p"("Note: Some features on this page may not work without JavaScript."),
+                        elem!"p"("You may need to refresh this page to be up to date with latest events."),
+                    );
 
                     break;
 
