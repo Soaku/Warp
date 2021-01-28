@@ -4,8 +4,8 @@ import elemi;
 import std.conv;
 
 import warp.html;
-import warp.pages;
 import warp.server;
+import warp.handle;
 import warp.scripts;
 import warp.structs;
 import warp.file_sender;
@@ -32,15 +32,15 @@ void main(string[] argv) {
 
             // Create context
             auto context = Context(request, response);
-            auto messages = context.route();
+            auto messages = context.serve();
 
             // If responding with HTML
             if (context.response.contentType == "text/html") {
 
-                auto html = context.display(messages);
+                auto api = APIData(context, messages);
 
                 // Write the content
-                response.content = cast(ubyte[]) context.htmlTemplate(html);
+                response.content = cast(ubyte[]) context.htmlTemplate(api);
 
             }
 

@@ -41,18 +41,19 @@ enum MessageType {
     // Implemented: server (yes); TODO client
 
     /// Change the user position on the map. `[ubyte x, ubyte y]`
+    /// If not present, map should be zoomed out.
     mapPosition,
     // TODO
 
-    /// Change text of a map line. `[ubyte lineNumber, ColoredText content x100]`
+    /// Change text of a map line. `[ubyte lineNumber, ColoredText[100] content]`
     mapLineContent,
     // TODO
 
-    /// Change height of a map line. `[ubyte lineNumber, ubyte x100]`
+    /// Change height of a map line. `[ubyte lineNumber, ubyte[100] height]`
     mapLineHeight,
     // TODO
 
-    /// Moved to a different area. `[string areaName]`
+    /// Moved to a different area. If the area name is empty, return to splash. `[string areaName]`
     changeArea,
     // TODO
 
@@ -107,24 +108,45 @@ struct Message {
 
     }
 
-    /// Create a content message
-    static addContent(string text = "", ubyte level = 0, Color color = Color.white) {
+    // Main content
+    struct {
 
-        return Message(MessageType.addContent, level, color, text);
+        /// Create a content message
+        static addContent(string text = "", ubyte level = 0, Color color = Color.white) {
+
+            return Message(MessageType.addContent, level, color, text);
+
+        }
+
+        /// Create a link
+        static addLink(string text, string href, string icon = null) {
+
+            return Message(MessageType.addLink, icon, text, href);
+
+        }
+
+        /// Create an action link
+        static addAction(string text, string action, string icon = null) {
+
+            return Message(MessageType.addAction, icon, text, action);
+
+        }
 
     }
 
-    /// Create a link
-    static addLink(string text, string href, string icon = null) {
+    // Map
+    struct {
 
-        return Message(MessageType.addLink, icon, text, href);
+        /// Change map line height
+        ///
+        /// Line number is `0..100`, height[n] is `1..11`
+        static mapLineHeight(ubyte lineNumber, ubyte[] height)
+        in (height.length == 100)
+        do {
 
-    }
+            return Message(MessageType.mapLineHeight, lineNumber, height);
 
-    /// Create an action link
-    static addAction(string text, string action, string icon = null) {
-
-        return Message(MessageType.addAction, icon, text, action);
+        }
 
     }
 

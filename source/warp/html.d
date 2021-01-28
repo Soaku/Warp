@@ -2,11 +2,17 @@ module warp.html;
 
 import elemi;
 import std.conv;
+import std.meta;
+import std.array;
+import std.range;
+import std.algorithm;
 
 import warp.structs;
 import warp.server.structs;
 
-string htmlTemplate(const Context context, Element body) {
+public import warp.display_api;
+
+string htmlTemplate(const Context context, const APIData api) {
 
     return Element.HTMLDoctype ~ elem!"html"(
 
@@ -54,6 +60,12 @@ string htmlTemplate(const Context context, Element body) {
 
                         "WARP".elem!("h1", q{ class="title" }),
 
+                        // Generate the map
+                        api.map,
+
+                        // Enable middle align of the map content
+                        elem!("div", q{ class="middle-helper" }),
+
                     ),
 
                     elem!("a", q{ class="mobile menu" href="javascript:void(0)" })(
@@ -95,7 +107,7 @@ string htmlTemplate(const Context context, Element body) {
 
                     ),
 
-                    body,
+                    api.body,
 
                 )
 
@@ -110,113 +122,5 @@ string htmlTemplate(const Context context, Element body) {
 private Element link(const Context context, string content, string href) {
 
     return elem!"a"(["class": context.theme.to!string, "href": href], content);
-
-}
-
-/// Display the given message list.
-Element display(ref Context context, Message[] messages) {
-
-    Element elements;
-
-    // Check each message
-    foreach (message; messages) {
-
-        switch (message.type) {
-
-            // Add content
-            case MessageType.addContent:
-
-                auto color = message.content[1].get!Color;
-                auto attributes = ["class": to!string(color == Color.theme ? context.theme : color)];
-
-                sw: final switch (message.content[0].get!int) {
-
-                    static foreach (i, el; ["p", "h1", "h2", "h3", "h4", "h5", "h6"]) {
-
-                        case i:
-                            elements.add(
-
-                                elem!el(
-                                    attributes,
-                                    message.content[2].str,
-                                )
-
-                            );
-                            break sw;
-
-                    }
-
-                }
-
-                break;
-
-            // Add link
-            case MessageType.addLink:
-
-                auto link = elem!"a"(
-                    [
-                        "class": "box-link",
-                        "title": message.content[1].str,
-                        "href": message.content[2].str,
-                    ],
-                );
-
-                link.addBoxContent(message.content[0].str, message.content[1].str);
-
-                // Add the link
-                elements.add(link);
-
-                break;
-
-            // Action button
-            case MessageType.addAction:
-
-                auto link = elem!"button"(
-                    [
-                        "class": "box-link",
-                        "name": "action",
-                        "value": message.content[2].str,
-                    ]
-                );
-                link.addBoxContent(message.content[0].str, message.content[1].str);
-
-                // Add the link
-                elements.add(link);
-
-                break;
-
-            // Change theme
-            case MessageType.changeTheme:
-
-                context.theme = message.content[0].get!Color;
-
-                break;
-
-            default: break;
-
-        }
-
-    }
-
-    return elements;
-
-}
-
-private void addBoxContent(ref Element link, string icon, string text) {
-
-    // Add an icon
-    if (icon.length) {
-
-        link.add(
-            elem!"img"([
-                "src": "/resources/icons/" ~ icon ~ ".png",
-                "alt": ""
-            ])
-        );
-
-    }
-
-    // Add text
-    link.add(text);
 
 }

@@ -46,10 +46,15 @@ Message[] listWorlds(ref Context context, WorldListFilter filter) {
 /// Create a world
 Message[] createWorld(ref Context context) {
 
+    import std.conv, std.range, std.array;
+
     return [
         Message.addContent("Do you really want to create this world?", 1, Color.cyan),
         Message.addLink("Cancel", "/worlds", "cancel"),
         Message.addAction("Do it", "type.regular", "confirm"),
+
+        // Solely for testing, remove later
+        Message.mapLineHeight(50, 100.to!ubyte.iota.array),
     ];
 
 }

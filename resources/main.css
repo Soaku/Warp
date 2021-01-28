@@ -189,8 +189,10 @@ main.column {
 #map {
 
     height: 300px;
-    line-height: 300px;
     position: relative;
+
+    /* Center-align the content */
+    text-align: center;
 
 }
 
@@ -198,8 +200,38 @@ main.column {
 
     width: 100%;
     height: 100%;
+
     position: absolute;
+
+    line-height: 300px;
+
     /*animation: portal 10s infinite linear;*/
+
+}
+
+#map-contents {
+
+    display: inline-block;
+    vertical-align: middle;
+
+    font-size: 15pt;
+
+}
+
+#map-contents .c {
+
+    display: inline-block;
+    height: 1em;
+    width: 1ch;
+
+}
+
+.middle-helper {
+
+    display: inline-block;
+    width: 0;
+    height: 100%;
+    vertical-align: middle;
 
 }
 
@@ -223,15 +255,16 @@ nav ul {
     list-style: none;
     padding-left: 0;
 
+    text-align: center;
+
 }
 
 nav a {
 
-    display: block;
-    margin: 10px 0;
+    display: inline-block;
+    margin: 5px 0;
 
     font-weight: bold;
-    text-align: center;
     line-height: 1em;
 
 }
