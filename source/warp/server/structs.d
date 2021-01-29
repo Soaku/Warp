@@ -1,5 +1,6 @@
 module warp.server.structs;
 
+import core.time;
 import std.socket;
 import std.exception;
 
@@ -13,7 +14,7 @@ class StatusException : Exception {
 
 package class HandleReleaseException : Exception {
 
-    alias ServerCallback = void delegate(shared Handler);
+    alias ServerCallback = void delegate(Handler);
 
     ServerCallback callback;
 
@@ -32,8 +33,15 @@ struct ServerOptions {
     /// Address of the server.
     InternetAddress address;
 
+    /// Data refresh timeout. This is the minimal time to pass between frame callbacks.
+    Duration refreshTimeout;
+
     /// Request handler.
     void delegate(Request, ref Response) handler;
+
+    /// Callback to run after every data refresh in order to perform asynchronous operations on the server thread.
+    /// Useful for managing handles passed through `Response.serverPass`.
+    void delegate() frameCallback;
 
 }
 
@@ -74,7 +82,7 @@ struct Response {
     /// Mimetype of the content.
     string contentType = "text/html";
 
-    /// Other headers not served by the library. All must end with a LF.
+    /// Other headers not served by the library. All must end with a LF. Use `addHeader` to safely add new ones.
     string headers;
 
     /// Content text

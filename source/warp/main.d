@@ -1,12 +1,15 @@
 module warp.main;
 
 import elemi;
+import core.time;
+
 import std.conv;
 import std.concurrency;
 
 import warp.html;
 import warp.server;
 import warp.handle;
+import warp.events;
 import warp.scripts;
 import warp.structs;
 import warp.file_sender;
@@ -33,6 +36,7 @@ void main(string[] argv) {
     ServerOptions server = {
 
         address: new InternetAddress("127.0.0.1", port),
+        refreshTimeout: 100.msecs,
 
         handler: (request, ref response) {
 
@@ -58,20 +62,16 @@ void main(string[] argv) {
             // Responding with JSON
             else if (context.response.contentType == "application/json") {
 
-                import std.json : JSONValue, toJSON;
-                import std.array : array;
-                import std.algorithm : map;
+                import std.json : toJSON;
 
-                auto json = messages
-                    .map!(a => a.serialize)
-                    .array
-                    .JSONValue;
-
-                response.content = cast(ubyte[]) json.toJSON;
+                const serialized = messages.serialize;
+                response.content = cast(ubyte[]) serialized.toJSON;
 
             }
 
-        }
+        },
+
+        frameCallback: () => updateListeners,
 
     };
 

@@ -65,7 +65,7 @@ private Message[] createWorld(ref Context context, World.Type worldType) {
     else if (context.body.get("action", "") == "create") {
 
         // TODO limit to only one world in queue per user
-        worldgen.send(worldType);
+        worldgen.send(context.user, worldType);
 
         with (Message)
         return [

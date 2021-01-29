@@ -49,9 +49,13 @@ void start(ServerOptions options) {
         }
 
         // Check for updates
-        Socket.select(socketSet, null, null);
+        auto ret = Socket.select(socketSet, null, null, options.refreshTimeout);
 
-        // Listen to existing connections
+        // Run the frames if there is a callback
+        if (options.frameCallback) options.frameCallback();
+
+        // Update existing connections
+        if (ret > 0)
         foreach_reverse (i, ref connection; connections) {
 
             // Wait for data
@@ -65,11 +69,11 @@ void start(ServerOptions options) {
             // Handle released
             catch (HandleReleaseException exc) {
 
+                // Run the callback
+                exc.callback(connection);
+
                 // Release handle
                 connections = connections.remove(i);
-
-                // Run the callback
-                exc.callback(cast(shared) connection);
 
             }
 

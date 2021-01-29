@@ -71,7 +71,8 @@ enum MessageType {
     /// Make a TCP connection to `/api/events/<name>`, wait for response and evaluate given messages. Repeat until
     /// the same opcode is sent with an empty name.
     listen,
-    // Implemented: server (yes, via <noscript>), TODO client
+    // Implemented: server (partial, via <noscript>), TODO client
+    // server needs to leave the client info telling them to connect.
 
 }
 
@@ -185,11 +186,21 @@ struct Message {
 
 }
 
+/// Serialize a message list
+JSONValue serialize(Message[] messageList) {
+
+    return messageList
+        .map!(a => a.serialize)
+        .array
+        .JSONValue;
+
+}
+
 /// Context
 struct Context {
 
     // TODO: proper login
-    static User globalUser;
+    static shared User globalUser;
 
     /// Parent request.
     Request request;
@@ -198,7 +209,7 @@ struct Context {
     Response* response;
 
     /// User to perform the request.
-    User user;
+    shared User user;
 
     /// URL parts.
     string[] urlParts;
@@ -210,7 +221,7 @@ struct Context {
 
     static this() {
 
-        globalUser = new User;
+        globalUser = new shared User;
 
     }
 

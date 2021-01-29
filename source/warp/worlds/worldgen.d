@@ -4,6 +4,7 @@ import std.stdio;
 import std.format;
 import std.concurrency;
 
+import warp.user;
 import warp.server;
 import warp.structs;
 import warp.worlds.world;
@@ -15,30 +16,26 @@ public {
 
 }
 
+/// Currently built world.
+private World world;
+
 /// Start the worldgen thread
 void startWorldgen() {
 
     while (true) {
 
-        // Receive messages
-        receive(
+        // Receive world creation orders
+        auto order = receiveOnly!(shared User, World.Type);
 
-            // Order world creation
-            (World.Type type) {
-                debug type.format!"worldgen: new task, create world %s".writeln;
-            },
+        // Prepare the world
+        world = new shared World;
+        world.owner = order[0];
+        world.type = order[1];
 
-            // Request status update
-            (shared Context context, shared Handler handlerSh) {
-                debug "worldgen: requested status update".writeln;
-
-                auto handler = cast() handlerSh;
-                handler.flush();
-                handler.socket.close();
-            },
-
+        // Send feedback
+        world.owner.sendEvent("worldgen",
+            Message.addContent(order[1].format!"Building a new %s world..."),
         );
-
 
     }
 

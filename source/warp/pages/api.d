@@ -1,8 +1,10 @@
 module warp.pages.api;
 
+debug import std.stdio;
 import std.concurrency;
 
 import warp.main;
+import warp.events;
 import warp.server;
 import warp.structs;
 import warp.pages.error;
@@ -30,23 +32,21 @@ void serveAPI(ref Context context) {
     switch (context.param(1)) {
 
         case "worldgen":
-            context.bindListener(worldgen);
+
+            Context newContext = context;
+
+            // Get the handler
+            context.response.serverPass((handler) {
+
+                // Add as a listener
+                newContext.addListener(handler);
+
+            });
             break;
 
         default:
             throw new StatusException("404 Not Found");
 
     }
-
-}
-
-/// Bind a listener for the given event
-private void bindListener(Context context, Tid tid) {
-
-    context.response.serverPass((handler) {
-
-        tid.send(cast(shared) context, handler);
-
-    });
 
 }
