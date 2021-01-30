@@ -50,6 +50,8 @@ string htmlTemplate(const Context context, const APIData api) {
 
         elem!"body"(
 
+            ["class": "theme-" ~ context.theme.to!string],
+
             elem!("form", q{ class="body-wrapper" method="POST" })(
 
                 // Add a hidden form item with the token
@@ -132,6 +134,6 @@ string htmlTemplate(const Context context, const APIData api) {
 
 private Element link(const Context context, string content, string href) {
 
-    return elem!"a"(["class": context.theme.to!string, "href": href], content);
+    return elem!"a"(["class": "theme", "href": href], content);
 
 }

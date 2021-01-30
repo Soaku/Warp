@@ -7,9 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Generate content
     generateMap();
     generatePortalParticles();
-
-    // remove later and perform based on API input
-    setInterval(drawPortal, 100);
+    spawnPortal();
+    bindAllLinks();
 
     // Resize layout
     resize();

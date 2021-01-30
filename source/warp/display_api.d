@@ -39,7 +39,7 @@ struct APIData {
                 case MessageType.addContent: {
 
                     auto color = message.content[1].get!Color;
-                    auto attributes = ["class": to!string(color == Color.theme ? context.theme : color)];
+                    auto attributes = ["class": color.to!string];
 
                     sw: final switch (message.content[0].get!int) {
 

@@ -39,23 +39,24 @@ enum MessageType {
 
     /// Clear the content.
     clearContent,
-    // TODO
 
     /// Push new content text. `[ubyte level, ColoredText content]`, 0 = `<p>`, 1 = `<h1>`, n = `<hn>`.
     addContent,
-    // Implemented: server (yes); TODO client
 
     /// Add a link. Icon may be empty. `[string icon, string text, string href]`
     addLink,
-    // Implemented: server (yes); TODO client
 
     /// Add an "action" link using POST to be verified with a token. It should submit to the same page, but include
     /// the given text in the action parameter. Icon may be empty. `[string icon, string text, string action]`
     addAction,
-    // Implemented: server (yes); TODO client
+
+    /// Update the token to use for POST requests.
+    setToken,
+    // TODO
 
     /// Change the current map mode. `[MapMode mapMode]`
     mapMode,
+    // TODO
 
     /// Change the user position on the map. `[ubyte x, ubyte y]`
     /// If not present, map should be zoomed out.
@@ -70,21 +71,21 @@ enum MessageType {
     mapLineHeight,
     // TODO
 
-    /// Moved to a different area. If the area name is empty, return to splash. `[string areaName]`
+    /// Moved to a different area. `[string areaName]`
     changeArea,
     // TODO
 
     /// Set theme for this page. `[Color theme]`
     setTheme,
-    // Implemented: server (yes); TODO client
+    // TODO client
 
     /// Listen to events under given name. `[string name]`
     ///
     /// Make a TCP connection to `/api/events/<name>`, wait for response and evaluate given messages. Repeat until
     /// the same opcode is sent with an empty name.
     listen,
-    // Implemented: server (partial, via <noscript>), TODO client
-    // server needs to leave the client info telling them to connect.
+    // TODO client
+    // TODO server needs to leave the client info telling them to connect.
 
 }
 
@@ -161,6 +162,13 @@ struct Message {
         static addAction(string text, string action, string icon = null) {
 
             return Message(MessageType.addAction, icon, text, action);
+
+        }
+
+        /// Assign a new token
+        static setToken(string token) {
+
+            return Message(MessageType.setToken, token);
 
         }
 

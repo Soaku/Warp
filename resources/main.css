@@ -259,14 +259,14 @@ nav a {
 }
 
 /* Default colors */
-.grey    { color: #767676 }
-.red     { color: #f2201f }
-.green   { color: #23fd00 }
-.yellow  { color: #fffd00 }
-.blue    { color: #1a8fff }
-.magenta { color: #fd28ff }
-.cyan    { color: #14ffff }
-.white   { color: #ffffff }
+.grey,    .theme-grey    .theme { color: #767676 }
+.red,     .theme-red     .theme { color: #f2201f }
+.green,   .theme-green   .theme { color: #23fd00 }
+.yellow,  .theme-yellow  .theme { color: #fffd00 }
+.blue,    .theme-blue    .theme { color: #1a8fff }
+.magenta, .theme-magenta .theme { color: #fd28ff }
+.cyan,    .theme-cyan    .theme { color: #14ffff }
+.white,   .theme-white   .theme { color: #ffffff }
 
 .grey    .progress { background: #767676 }
 .yellow  .progress { background: #fffd00 }

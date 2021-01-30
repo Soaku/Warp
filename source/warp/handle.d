@@ -6,6 +6,8 @@ import warp.server.structs;
 
 Message[] serve(ref Context context) {
 
+    Message[] messageList;
+
     // Move to API if requested
     context.serveAPI;
 
@@ -23,14 +25,17 @@ Message[] serve(ref Context context) {
 
         }
 
+        // Send the new token
+        messageList ~= Message.setToken(context.user.actionToken);
+
     }
 
     // Route the message
-    auto msg = context.route();
+    messageList ~= context.route();
 
     // Write the map if area has changed or if the client doesn't support history
 
-    return msg;
+    return messageList;
 
 }
 

@@ -6,6 +6,7 @@ function PortalParticle(angle, distance) {
 
     this.angle = Math.random() * 360;
     this.distance = Math.random() * 8;
+    this.initialDistance = this.distance;
 
     this.orbit = [
         0.6 + Math.random() * 0.4,
@@ -41,7 +42,7 @@ function drawPortal() {
     const mapContents = document.byID("map-contents");
 
     // Get transition change
-    let change = Math.sin(map.step * Math.PI / 180);
+    const change = Math.sin(map.step * Math.PI / 180);
     map.step = (map.step + 5) % 360;
 
     // Update particle params

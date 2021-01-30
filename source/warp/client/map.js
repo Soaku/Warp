@@ -1,5 +1,5 @@
 /// Contains map data.
-let map = new function() {
+const map = new function() {
 
     this.size = [25, 15];
     this.center = [
@@ -7,7 +7,10 @@ let map = new function() {
         Math.floor(this.size[1] / 2),
     ];
     this.scaleX = this.size[1] / this.size[0];
+    this.mode = 0
 
+    // Start the portal drawing interval
+    this.portal = null;
     this.step = 0;  // 0–360 in degrees, used for sin() transitions
     this.portalParticles = [];
 
@@ -44,5 +47,15 @@ function generateMap() {
 
     // Set the content
     mapContents.innerHTML = contentHTML;
+
+}
+
+/// Replace the map with a portal
+function spawnPortal() {
+
+    // Ignore if there is already a portal set
+    if (map.portal) return;
+
+    map.portal = setInterval(drawPortal, 100);
 
 }

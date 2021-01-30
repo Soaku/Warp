@@ -35,9 +35,6 @@ private Message[] pickWorldType(ref Context context) {
 
     with (Message)
     return [
-        addLink("Back to world list", "/worlds", ""),
-        addContent(),
-
         addContent("Pick world type", 1, Color.cyan),
         addLink("Regular", "/worlds/new/regular", "world-regular"),
     ];
@@ -50,13 +47,12 @@ private Message[] createWorld(ref Context context, World.Type worldType) {
     // Confirm world creation first
     if (context.method == Request.Method.get) {
 
-        enum question = "Do you really want to create a new %s world?";
+        enum question = "Confirm creation of a new %s world";
 
         with (Message)
         return [
             mapMode(MapMode.warping),
             addContent(worldType.format!question, 1, Color.cyan),
-            addLink("Cancel", "/worlds/new", "cancel"),
             addAction("Do it", "create", "confirm"),
         ];
 
@@ -73,7 +69,7 @@ private Message[] createWorld(ref Context context, World.Type worldType) {
             setTheme(Color.grey),
             mapMode(MapMode.warping),
 
-            clearContent(),
+            clearContent,
             addContent("Waiting in world generator queue..."),
             listen("worldgen"),
 

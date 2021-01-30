@@ -36,6 +36,7 @@ Message[] listWorlds(ref Context context, WorldListFilter filter) {
 
     with (Message)
     return [
+        clearContent,
         addContent("Your worlds", 1, Color.cyan),
         addContent("You don't have any worlds... Create a new one!"),
         addContent(),
