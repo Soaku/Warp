@@ -43,6 +43,7 @@ string htmlTemplate(const Context context, const APIData api) {
 
             elem!("script", q{
                 src="/resources/main.js"
+                defer
             }),
 
         ),

@@ -54,6 +54,7 @@ private Message[] createWorld(ref Context context, World.Type worldType) {
 
         with (Message)
         return [
+            mapMode(MapMode.warping),
             addContent(worldType.format!question, 1, Color.cyan),
             addLink("Cancel", "/worlds/new", "cancel"),
             addAction("Do it", "create", "confirm"),
@@ -70,6 +71,7 @@ private Message[] createWorld(ref Context context, World.Type worldType) {
         with (Message)
         return [
             setTheme(Color.grey),
+            mapMode(MapMode.warping),
 
             clearContent(),
             addContent("Waiting in world generator queue..."),

@@ -23,6 +23,15 @@ enum Color {
 
 }
 
+enum MapMode {
+
+    portal,
+    warping,
+    terrain,
+    political,
+
+}
+
 alias ColoredText = AliasSeq!(Color, string);
 
 /// Type of the message sent
@@ -44,6 +53,9 @@ enum MessageType {
     /// the given text in the action parameter. Icon may be empty. `[string icon, string text, string action]`
     addAction,
     // Implemented: server (yes); TODO client
+
+    /// Change the current map mode. `[MapMode mapMode]`
+    mapMode,
 
     /// Change the user position on the map. `[ubyte x, ubyte y]`
     /// If not present, map should be zoomed out.
@@ -156,6 +168,13 @@ struct Message {
 
     // Map
     struct {
+
+        /// Set map mode
+        static mapMode(MapMode mode) {
+
+            return Message(MessageType.mapMode, mode);
+
+        }
 
         /// Change map line height
         ///
