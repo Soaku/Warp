@@ -208,8 +208,21 @@ main.column {
 #map-contents .c {
 
     display: inline-block;
-    height: 1em;
     width: 1ch;
+    height: 1em;
+
+    position: relative;
+
+}
+
+#transition-helper {
+
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    bottom: 0;
 
 }
 
@@ -296,6 +309,6 @@ nav a {
 .theme-grey #profile .progress { background: #767676 }
 .theme-gret #profile .progress-content { background: #fd28ff }
 
-.portal-magenta {
+#transition-helper, .portal-magenta {
     background: #fd28ff;
 }

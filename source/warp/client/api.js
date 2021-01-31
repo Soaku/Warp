@@ -10,6 +10,7 @@ const api = new function() {
         this.changes = {
             "events": "",
             "theme": 8,
+            "mapMode": 0,
         };
 
     }
@@ -177,7 +178,6 @@ function parseAPI(text) {
 function readAPI(messages) {
 
     // Clear some values to defaults
-    map.mode = 0;
     api.restoreChanges();
 
     for (let item of messages) {
@@ -189,6 +189,7 @@ function readAPI(messages) {
     // Update some queued values
     listenAPI(api.changes.events);
     setTheme(api.changes.theme);
+    updateMapMode(api.changes.mapMode);
 
 }
 
@@ -304,14 +305,7 @@ function readAPIMessage(message) {
         // Change map mode
         case "mapMode": {
 
-            map.mode = message[1];
-
-            // Portal
-            if (map.mode <= 1) spawnPortal();
-
-            // Map (TODO)
-            else { }
-
+            api.changes.mapMode = message[1];
             break;
 
         }

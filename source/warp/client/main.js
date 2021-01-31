@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Prepare the map
     generateMap();
     generatePortalParticles();
-    spawnPortal();
+    updateMapMode(0);
 
     // Start the API
     findLastMessage();

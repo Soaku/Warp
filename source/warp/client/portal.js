@@ -1,11 +1,14 @@
 const portal = new function() {
 
+    this.display = true;
     this.speed = 6;
     this.minParticleDistance = 0;
     this.maxRadius = 7.5;
+    this.fill = 0;  // 0–10
 
     this.update = () => {
 
+        /// Animate a property
         const tween = (prop, target) => {
 
             const direction = Math.sign(target - this[prop]);
@@ -26,20 +29,68 @@ const portal = new function() {
 
         }
 
-        // Update the params
-        if (map.mode === 1) {
+        /// Fill the map
+        const fillMap = (cb) => {
 
+            // Fill the content
+            if (this.fill < 10) tween("fill", 10);
+
+            // The animation has already ended
+            else cb();
+        };
+
+
+        // Portal about to warp or warp in progress
+        if (map.mode) {
             tween("speed", 18);
             tween("minParticleDistance", 10);
             tween("maxRadius", 3);
-
         }
 
+        // Normal portal
         else {
-
             tween("speed", 6);
             tween("minParticleDistance", 0);
             tween("maxRadius", map.size[1]/2 + 0.5);
+        }
+
+
+        // Portal
+        if (map.mode <= 1) {
+
+            // If displaying, remove the fill
+            if (this.display) tween("fill", 0);
+
+            // Otherwise fill the map and display it after
+            else fillMap(() => { this.display = true; });
+
+        }
+
+        // Other modes — fill portal
+        else if (this.display) fillMap(() => {
+
+            // Stop the display
+            this.display = false;
+
+            // Draw the map
+            drawMap();
+
+        });
+
+        /// Other modes, portal already hidden
+        else {
+
+            // Remove the fill
+            tween("fill", 0);
+
+            // Done
+            if (this.fill === 0) {
+
+                // Clear the interval
+                clearInterval(map.portal);
+                map.portal = null;
+
+            }
 
         }
 
@@ -93,6 +144,13 @@ function drawPortal() {
     // Update speed
     portal.update();
 
+    // Draw filling
+    const trans = document.byID("transition-helper");
+    trans.style.opacity = portal.fill / 10;
+
+    // Ignore the rest if not displaying
+    if (!portal.display) return;
+
     // Get transition change
     const change = Math.sin(map.step * Math.PI / 180);
     map.step = (map.step + 5) % 360;
@@ -120,7 +178,7 @@ function drawPortal() {
 
         const cell = [x, y, mapContents.children[y].children[x]];
 
-        // Clear the cell.
+        // Reset this cell
         resetCell(cell);
 
         // Draw the main circle
@@ -158,11 +216,25 @@ function drawCircle(cell, center, radius, gradient) {
     // Ignore if outside of radius
     if (distance > radius) return;
 
+    // Draw the cell
+    drawCell(cell, 1 - distance*gradient/radius);
+
+}
+
+/// Draw a cell
+function drawCell(cell, opacity) {
+
+    // No opacity, ignore
+    if (opacity === 0) return;
+
+    // Add color
     cell[2].classList.add("portal-magenta");
 
+    // Get the old opacity
     let oldOpacity = parseFloat(cell[2].style.opacity);
     oldOpacity = isNaN(oldOpacity) ? 0 : oldOpacity;
 
-    cell[2].style.opacity = oldOpacity + (1 - distance*gradient/radius) * (1 - oldOpacity);
+    // Blend
+    cell[2].style.opacity = oldOpacity + opacity*(1 - oldOpacity);
 
 }

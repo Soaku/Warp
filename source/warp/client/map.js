@@ -22,6 +22,22 @@ function generateMap() {
     // Get the map contents element
     const mapContents = document.byID("map-contents");
 
+    // Generate the content
+    generateMapContents(mapContents);
+
+    // Add a portal transition helper
+    const trans = document.createElement("div");
+    trans.id = "transition-helper";
+    trans.style.opacity = "0";
+
+    mapContents.appendChild(trans);
+
+}
+
+/// Generate map contents in the given element
+/// @private
+function generateMapContents(mapContents) {
+
     // Ignore if it has children
     if (mapContents.children.length > 0) return;
 
@@ -50,12 +66,34 @@ function generateMap() {
 
 }
 
-/// Replace the map with a portal
-function spawnPortal() {
+/// Update the map mode
+function updateMapMode(newMode) {
 
-    // Ignore if there is already a portal set
-    if (map.portal) return;
+    // Set the new value
+    map.mode = newMode;
 
-    map.portal = setInterval(drawPortal, 100);
+    // 0 or 1
+    if (map.mode <= 1) {
+
+        // Unless there is already a portal spawned
+        if (!map.portal) {
+
+            // Create one
+            map.portal = setInterval(drawPortal, 100);
+
+        }
+
+    }
+
+    else {
+
+        // Wait until the current portal stops
+
+    }
+
+}
+
+/// Draw the map
+function drawMap() {
 
 }
