@@ -1,3 +1,9 @@
+const portal = new function() {
+
+    this.speed = 6;
+
+};
+
 /// Create a portal particle.
 ///
 /// angle = Angle (0–360) this particle is on.
@@ -48,7 +54,7 @@ function drawPortal() {
     // Update particle params
     for (let particle of map.portalParticles) {
 
-        particle.angle = (particle.angle + 6) % 360;
+        particle.angle = (particle.angle + portal.speed) % 360;
 
     }
 

@@ -4,10 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Bind events
     window.addEventListener("resize", resize);
 
-    // Generate content
+    // Prepare the map
     generateMap();
     generatePortalParticles();
     spawnPortal();
+
+    // Start the API
+    findLastMessage();
     bindAllLinks();
 
     // Resize layout

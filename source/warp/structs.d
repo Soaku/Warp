@@ -37,8 +37,17 @@ alias ColoredText = AliasSeq!(Color, string);
 /// Type of the message sent
 enum MessageType {
 
-    /// Clear the content.
-    clearContent,
+    /// Start a message with ID equal to the current request URL. Set the parent message by given ID, if not empty.
+    /// `[string parent]`
+    ///
+    /// This opcode is used by the server to control buffer history to keep it clean.
+    ///
+    /// If this opcode is sent, all next content until the next message opcode should be added to this message, and all
+    /// previous content should be erased, until it belongs to an ancestor of this message.
+    ///
+    /// If parent is set to `..`, the client should simply set the previous message as parent.
+    message,
+    // TODO; client-only
 
     /// Push new content text. `[ubyte level, ColoredText content]`, 0 = `<p>`, 1 = `<h1>`, n = `<hn>`.
     addContent,
@@ -137,10 +146,10 @@ struct Message {
     // Main content
     struct {
 
-        /// Clear the content
-        static clearContent() {
+        /// Start a message
+        static message(string message = "") {
 
-            return Message(MessageType.clearContent);
+            return Message(MessageType.message, message);
 
         }
 

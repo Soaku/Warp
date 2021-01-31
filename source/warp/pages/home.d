@@ -5,10 +5,11 @@ import warp.structs;
 /// Serve the home page
 Message[] serveHome(const Context) {
 
+    with (Message)
     return [
-        Message.clearContent,
-        Message.addContent("Welcome to WARP...", 1, Color.theme),
-        Message.addContent("Explore, fight, interact with others and WARP between worlds."),
+        message,
+        addContent("Welcome to WARP...", 1, Color.theme),
+        addContent("Explore, fight, interact with others and WARP between worlds."),
     ];
 
 }

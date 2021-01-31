@@ -1,4 +1,16 @@
-let apiListenAddress = "";
+const api = new function() {
+
+    this.listenAddress = "";
+    this.messageElem = null;
+
+}
+
+/// Find the last message
+function findLastMessage() {
+
+    api.messageElem = document.byTag("main")[0].lastChild;
+
+}
 
 /// Bind all links on the page
 function bindAllLinks() {
@@ -85,7 +97,7 @@ function requestAPI(url, method, action) {
 
             const main = document.byTag("main")[0];
 
-            main.appendChild(document.createElement("p"));
+            api.messageElem.appendChild(document.createElement("p"));
             readAPI(JSON.parse(text));
 
         });
@@ -112,18 +124,45 @@ function readAPIMessage(message) {
 
     console.log(message);
 
-    const main = document.byTag("main")[0];
+    const msgElem = api.messageElem;
 
     // Check message type
     switch (message[0]) {
 
-        // Clear content
-        case "clearContent": {
+        // Start a content message
+        case "message": {
 
-            // Remove all elements except the profile
-            while (main.children.length > 1) {
-                main.removeChild(main.lastChild);
+            const main = document.byTag("main")[0];
+
+            // Find the message parent
+            if (message[1] !== "..") {
+
+                // Start from the end, skip first child
+                for (let i = main.childElementCount-1; i >= 1; i--) {
+
+                    // Find the child
+                    const child = main.children[i];
+
+                    // End once the parent is found
+                    if (child.getAttribute("data-uri") === message[1]) break;
+
+                    // Delete the child otherwise
+                    main.removeChild(child);
+
+                }
+
             }
+
+            // Create an element for the object
+            const elem = document.createElement("div");
+            elem.setAttribute("data-uri", window.location.pathname);
+
+            // Assign as the current message element
+            api.messageElem = elem;
+
+            // Append the message element
+            main.appendChild(elem);
+
             break;
 
         }
@@ -140,7 +179,7 @@ function readAPIMessage(message) {
             elem.classList.add(color(message[2]));
             elem.innerText = message[3]
 
-            main.appendChild(elem);
+            msgElem.appendChild(elem);
             break;
 
         }
@@ -158,7 +197,7 @@ function readAPIMessage(message) {
             addBoxContent(elem, message[1], message[2]);
             bindLink(elem);
 
-            main.appendChild(elem);
+            msgElem.appendChild(elem);
             break;
 
         }
@@ -174,7 +213,7 @@ function readAPIMessage(message) {
             addBoxContent(elem, message[1], message[2]);
             bindLink(elem);
 
-            main.appendChild(elem);
+            msgElem.appendChild(elem);
             break;
 
         }
@@ -208,7 +247,7 @@ function readAPIMessage(message) {
         // Listen for updates
         case "listen": {
 
-            apiListenAddress = message[1];
+            api.listenAddress = message[1];
             break;
 
         }

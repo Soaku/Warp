@@ -5,9 +5,10 @@ import warp.structs;
 /// Serve the character list.
 Message[] serveCharacters(const Context) {
 
+    with (Message)
     return [
-        Message.clearContent,
-        Message.addContent("Your characters:", 1, Color.theme),
+        message,
+        addContent("Your characters:", 1, Color.theme),
     ];
 
 }

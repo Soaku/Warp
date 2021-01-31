@@ -35,7 +35,9 @@ private Message[] pickWorldType(ref Context context) {
 
     with (Message)
     return [
+        message("/worlds"),
         addContent("Pick world type", 1, Color.cyan),
+        addLink("Cancel", "/worlds", "back"),
         addLink("Regular", "/worlds/new/regular", "world-regular"),
     ];
 
@@ -47,12 +49,14 @@ private Message[] createWorld(ref Context context, World.Type worldType) {
     // Confirm world creation first
     if (context.method == Request.Method.get) {
 
-        enum question = "Confirm creation of a new %s world";
+        enum question = "Do you really want to create of a new %s world?";
 
         with (Message)
         return [
+            message("/worlds/new"),
             mapMode(MapMode.warping),
             addContent(worldType.format!question, 1, Color.cyan),
+            addLink("Cancel", "/worlds/new", "back"),
             addAction("Do it", "create", "confirm"),
         ];
 
@@ -69,7 +73,7 @@ private Message[] createWorld(ref Context context, World.Type worldType) {
             setTheme(Color.grey),
             mapMode(MapMode.warping),
 
-            clearContent,
+            message,
             addContent("Waiting in world generator queue..."),
             listen("worldgen"),
 
@@ -80,6 +84,7 @@ private Message[] createWorld(ref Context context, World.Type worldType) {
     // Unknown request
     else with (Message)
     return [
+        message("/worlds/new"),
         addContent("Invalid action type", 1, Color.cyan),
         addContent("Noclipping is dangerous. You don't want to end up in the backrooms, do you?"),
         addContent("Only use safe, certified portals, don't try to make your own, little hacker!"),

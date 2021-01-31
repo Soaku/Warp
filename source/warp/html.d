@@ -5,6 +5,7 @@ import std.conv;
 import std.meta;
 import std.array;
 import std.range;
+import std.string;
 import std.algorithm;
 
 import warp.structs;
@@ -120,7 +121,12 @@ string htmlTemplate(const Context context, const APIData api) {
 
                     ),
 
-                    api.body,
+                    elem!"div"(
+                        ["data-uri": "/" ~ context.urlParts.join("/")],
+
+                        api.body,
+
+                    )
 
                 )
 
