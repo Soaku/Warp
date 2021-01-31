@@ -58,6 +58,12 @@ p {
 
 }
 
+a {
+
+    color: inherit;
+
+}
+
 .box-link {
 
     display: inline-block;
@@ -262,14 +268,14 @@ nav a {
 
     margin: 10px 0 20px 0;
     height: 4px;
-    background: #fffd00;
 
 }
 
-.progress-wrapper {
+.progress-content {
 
-    height: 4px;
     background: #fff;
+    height: 4px;
+    width: 0;
 
 }
 
@@ -283,8 +289,12 @@ nav a {
 .cyan,    .theme-cyan    .theme { color: #14ffff }
 .white,   .theme-white   .theme { color: #ffffff }
 
-.grey    .progress { background: #767676 }
-.yellow  .progress { background: #fffd00 }
+/* Profile colors */
+#profile { color: #fffd00 }
+#profile .progress { background: #fffd00 }
+.theme-grey #profile { color: #767676 }
+.theme-grey #profile .progress { background: #767676 }
+.theme-gret #profile .progress-content { background: #fd28ff }
 
 .portal-magenta {
     background: #fd28ff;

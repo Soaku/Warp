@@ -15,12 +15,6 @@ public import warp.display_api;
 
 string htmlTemplate(const Context context, const APIData api) {
 
-    // Theme is grey, make the profile color grey too
-    auto profileTheme = context.theme == Color.grey ? "grey"
-
-        // Make it yellow otherwise
-        : "yellow";
-
     return Element.HTMLDoctype ~ elem!"html"(
 
         elem!"head"(
@@ -107,11 +101,11 @@ string htmlTemplate(const Context context, const APIData api) {
                 elem!("main", q{ class="column" })(
 
                     elem!"div"(
-                        ["id": "profile", "class": profileTheme],
+                        ["id": "profile"],
 
                         // User
                         elem!"a"(
-                            ["href": "/user", "class": profileTheme],
+                            ["href": "/user"],
                             "Anonymous"
                         ),
                         "0 crystals".elem!("p", q{ style="float:right" }),

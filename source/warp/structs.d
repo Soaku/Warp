@@ -47,7 +47,6 @@ enum MessageType {
     ///
     /// If parent is set to `..`, the client should simply set the previous message as parent.
     message,
-    // TODO; client-only
 
     /// Push new content text. `[ubyte level, ColoredText content]`, 0 = `<p>`, 1 = `<h1>`, n = `<hn>`.
     addContent,
@@ -61,7 +60,6 @@ enum MessageType {
 
     /// Update the token to use for POST requests.
     setToken,
-    // TODO
 
     /// Change the current map mode. `[MapMode mapMode]`
     mapMode,
@@ -86,14 +84,12 @@ enum MessageType {
 
     /// Set theme for this page. `[Color theme]`
     setTheme,
-    // TODO client
 
     /// Listen to events under given name. `[string name]`
     ///
-    /// Make a TCP connection to `/api/events/<name>`, wait for response and evaluate given messages. Repeat until
-    /// the same opcode is sent with an empty name.
+    /// Make a TCP connection to `/api/events/<name>`, wait for response and evaluate given messages. If meant to
+    /// be repeated, the server will send another `listen` opcode.
     listen,
-    // TODO client
     // TODO server needs to leave the client info telling them to connect.
 
 }

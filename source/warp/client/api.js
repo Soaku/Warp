@@ -1,8 +1,19 @@
 const api = new function() {
 
-    this.listenAddress = "";
+    this.listenStream = "";
+    this.listenControl = new AbortController;
     this.lastAnchor = 0;
     this.messageElem = null;
+
+    this.restoreChanges = () => {
+
+        this.changes = {
+            "events": "",
+            "theme": 8,
+        };
+
+    }
+    this.restoreChanges();
 
 }
 
@@ -66,12 +77,41 @@ function refreshAPI() {
 
 }
 
+/// Listen to an API event stream.
+function listenAPI(stream) {
+
+    // Ignore if the stream is at the same address
+    if (stream === api.listenStream) return;
+
+    // Stop previous stream
+    api.listenControl.abort();
+
+    // Mark as listening
+    api.listenStream = stream;
+
+    // Don't proceed if ordered to stop
+    if (stream === "") return;
+
+    // Create a new control
+    api.listenControl = new AbortController;
+
+    // Build the request
+    const init = {
+        "signal": api.listenControl.signal,
+    };
+
+    fetch("/api/event/" + stream, init)
+        .then(response => response.text())
+        .then(parseAPI);
+
+}
+
 /// Make a request to the API.
 function requestAPI(url, method, action) {
 
     // Build the request
-    let init = {
-        "method": method
+    const init = {
+        "method": method,
     };
 
     // If doing a POST request
@@ -101,31 +141,35 @@ function requestAPI(url, method, action) {
     fetch("/api" + url, init)
 
         .then(response => response.text())
-        .then(text => {
+        .then(parseAPI);
 
-            const main = document.byTag("main")[0];
+}
 
-            // Read the message
-            readAPI(JSON.parse(text));
+/// Parse an API response
+function parseAPI(text) {
 
+    const main = document.byTag("main")[0];
 
+    // Create a separator
+    const sep = document.createElement("p");
+    sep.id = "anchor-" + api.lastAnchor++;
+    api.messageElem.append(sep);
 
-            // Create a separator
-            const sep = document.createElement("p");
-            sep.id = "anchor-" + api.lastAnchor++;
-            api.messageElem.prepend(sep);
+    // Get its position
+    const setOffset = sep.offsetTop;
 
-            // If focus is in the menu
-            const nav = document.byTag("nav")[0];
-            const focus = document.activeElement;
+    // Read the message
+    readAPI(JSON.parse(text));
 
-            // Clear it
-            if (nav.contains(focus)) focus.blur();
+    // If focus is in the menu
+    const nav = document.byTag("nav")[0];
+    const focus = document.activeElement;
 
-            // Scroll the the separator
-            main.scrollTop = sep.offsetTop;
+    // Clear it
+    if (nav.contains(focus)) focus.blur();
 
-        });
+    // Scroll the the separator
+    main.scrollTop = setOffset;
 
 }
 
@@ -134,13 +178,17 @@ function readAPI(messages) {
 
     // Clear some values to defaults
     map.mode = 0;
-    // theme = 0
+    api.restoreChanges();
 
     for (let item of messages) {
 
         readAPIMessage(item);
 
     }
+
+    // Update some queued values
+    listenAPI(api.changes.events);
+    setTheme(api.changes.theme);
 
 }
 
@@ -268,32 +316,24 @@ function readAPIMessage(message) {
 
         }
 
+        // Set page theme
+        case "setTheme": {
 
-        // Listen for updates
-        case "listen": {
-
-            api.listenAddress = message[1];
+            // Queue changing theme
+            api.changes.theme = message[1];
             break;
 
         }
 
-    }
+        // Listen for updates
+        case "listen": {
 
-}
+            // Queue changing stream
+            api.changes.events = message[1];
+            break;
 
-/// Get color class from number
-function color(num) {
+        }
 
-    switch (num) {
-        case 0: return "white";
-        case 1: return "theme";
-        case 2: return "grey";
-        case 3: return "red";
-        case 4: return "green";
-        case 5: return "yellow";
-        case 6: return "blue";
-        case 7: return "magenta";
-        case 8: return "cyan";
     }
 
 }

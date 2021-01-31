@@ -78,12 +78,12 @@ synchronized final class User {
             if (auto p = stream in eventQueue) {
 
                 // Append the messages
-                *p ~= cast(shared) messages;
+                *p ~= cast(shared) messages.dup;
 
             }
 
             // Create the item
-            else eventQueue[stream] = cast(shared) messages;
+            else eventQueue[stream] = cast(shared) messages.dup;
 
         }
 

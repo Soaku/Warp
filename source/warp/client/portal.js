@@ -1,6 +1,49 @@
 const portal = new function() {
 
     this.speed = 6;
+    this.minParticleDistance = 0;
+    this.maxRadius = 7.5;
+
+    this.update = () => {
+
+        const tween = (prop, target) => {
+
+            const direction = Math.sign(target - this[prop]);
+
+            // Wanting a different target
+            if (this[prop] !== target) {
+
+                this[prop] += direction;
+
+                // Crossed the target
+                if (this[prop] * direction > target * direction) {
+
+                    this[prop] = target;
+
+                }
+
+            }
+
+        }
+
+        // Update the params
+        if (map.mode === 1) {
+
+            tween("speed", 18);
+            tween("minParticleDistance", 10);
+            tween("maxRadius", 3);
+
+        }
+
+        else {
+
+            tween("speed", 6);
+            tween("minParticleDistance", 0);
+            tween("maxRadius", map.size[1]/2 + 0.5);
+
+        }
+
+    }
 
 };
 
@@ -47,6 +90,9 @@ function drawPortal() {
 
     const mapContents = document.byID("map-contents");
 
+    // Update speed
+    portal.update();
+
     // Get transition change
     const change = Math.sin(map.step * Math.PI / 180);
     map.step = (map.step + 5) % 360;
@@ -55,6 +101,7 @@ function drawPortal() {
     for (let particle of map.portalParticles) {
 
         particle.angle = (particle.angle + portal.speed) % 360;
+        particle.distance = Math.max(portal.minParticleDistance, particle.initialDistance);
 
     }
 
@@ -78,7 +125,7 @@ function drawPortal() {
 
         // Draw the main circle
         drawCircle(cell, map.center, map.size[1]/2 + change/2, 1.00);
-        drawCircle(cell, map.center, map.size[1]/3 + change/2, 1.00);
+        drawCircle(cell, map.center, Math.min(portal.maxRadius, map.size[1]/3 + change/2), 1.00);
 
         // Draw the particles
         for (let particle of map.portalParticles) {

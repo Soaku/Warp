@@ -33,10 +33,21 @@ void startWorldgen() {
         world.type = order[1];
 
         // Send feedback
-        world.owner.sendEvent("worldgen",
-            Message.addContent(order[1].format!"Building a new %s world..."),
-        );
+        updateStatus(order[1].format!"Building a new %s world...");
 
     }
+
+}
+
+/// Send a status update. Shouldn't be used if the job is finished.
+void updateStatus(string text) {
+
+    with (Message)
+    world.owner.sendEvent("worldgen",
+        listen("worldgen"),
+        setTheme(Color.grey),
+        mapMode(MapMode.terrain),
+        addContent(text),
+    );
 
 }

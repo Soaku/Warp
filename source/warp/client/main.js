@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
     findLastMessage();
     bindAllLinks();
 
-    // Resize layout
+    // Prepare layout
+    updateTheme();
     resize();
 
     // Remove all instances of this stupid class
