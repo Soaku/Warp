@@ -36,12 +36,8 @@ void serveAPI(ref Context context) {
             Context newContext = context;
 
             // Get the handler
-            context.response.serverPass((handler) {
+            newContext.addListener(context.response.delay);
 
-                // Add as a listener
-                newContext.addListener(handler);
-
-            });
             break;
 
         default:

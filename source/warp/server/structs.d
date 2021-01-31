@@ -85,8 +85,22 @@ struct Response {
     /// Other headers not served by the library. All must end with a LF. Use `addHeader` to safely add new ones.
     string headers;
 
-    /// Content text
+    /// Content text.
     ubyte[] content;
+
+    /// Handler for this reponse.
+    private Handler handler;
+
+    /// If true, the response should be automatically flushed once the handler callback returns.
+    ///
+    /// Use delayResponse to control this behavior.
+    bool autoflush = true;
+
+    this(Handler handler) {
+
+        this.handler = handler;
+
+    }
 
     void addHeader(string key, string value) {
 
@@ -96,12 +110,16 @@ struct Response {
 
     }
 
-    /// Release this socket's `Handle` from the server's control and pass it to the given function as a shared object.
+    /// Prevent the server from automatically flushing the content, in order to respond to the socket later.
     ///
-    /// This function ALWAYS throws, the exception is not meant to be caught, however.
-    void serverPass(HandleReleaseException.ServerCallback callback) {
+    /// Provides a `Handler` object to manage the connection. Use `Handler.flush` to send the data and
+    /// `Handler.socket.close` to close the socket after.
+    ///
+    /// The server will automatically close the socket if the client disconnects. Check `Handler.socket.isAlive`
+    Handler delay() {
 
-        throw new HandleReleaseException(callback);
+        autoflush = false;
+        return handler;
 
     }
 

@@ -11,6 +11,9 @@ Message[] serve(ref Context context) {
     // Move to API if requested
     context.serveAPI;
 
+    // Stop if this is an event listener
+    if (!context.response.autoflush) return [];
+
     // If the request is done with POST
     if (context.method == Request.Method.post && context.user) {
 

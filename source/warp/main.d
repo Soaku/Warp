@@ -64,6 +64,9 @@ void main(string[] argv) {
 
                 import std.json : toJSON;
 
+                // Ignore if the response is empty
+                if (messages.length == 0) return;
+
                 const serialized = messages.serialize;
                 response.content = cast(ubyte[]) serialized.toJSON;
 

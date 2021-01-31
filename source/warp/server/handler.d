@@ -13,7 +13,8 @@ class Handler {
 
         method,
         headers,
-        body
+        body,
+        response
 
     }
 
@@ -46,6 +47,7 @@ class Handler {
 
         this.options = options;
         this.socket = socket;
+        this.response = Response(this);
 
     }
 
@@ -164,8 +166,13 @@ class Handler {
     /// Generate a response for the request and flush afterwards.
     void respond() {
 
+        phase = Phase.response;
+
+        // Pass the handler further
         if (options.handler) options.handler(request, response);
-        flush();
+
+        // Flush the data
+        if (response.autoflush) flush();
 
     }
 
@@ -299,6 +306,7 @@ class Handler {
 
             }
 
+            // Body
             case Phase.body: {
 
                 string key, value;
@@ -355,6 +363,10 @@ class Handler {
 
             }
 
+            // Processing response
+            case Phase.response: break;
+
+
         }
 
     }
@@ -362,7 +374,7 @@ class Handler {
     private void resetData() {
 
         request = Request();
-        response = Response();
+        response = Response(this);
         phase = Phase.method;
         line = "";
 
