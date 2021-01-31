@@ -1,6 +1,7 @@
 const api = new function() {
 
     this.listenAddress = "";
+    this.lastAnchor = 0;
     this.messageElem = null;
 
 }
@@ -58,6 +59,13 @@ function bindLink(element) {
 
 }
 
+/// Make an API call to refresh this page, used for history handling.
+function refreshAPI() {
+
+    requestAPI(window.location.pathname, "GET");
+
+}
+
 /// Make a request to the API.
 function requestAPI(url, method, action) {
 
@@ -97,8 +105,25 @@ function requestAPI(url, method, action) {
 
             const main = document.byTag("main")[0];
 
-            api.messageElem.appendChild(document.createElement("p"));
+            // Read the message
             readAPI(JSON.parse(text));
+
+
+
+            // Create a separator
+            const sep = document.createElement("p");
+            sep.id = "anchor-" + api.lastAnchor++;
+            api.messageElem.prepend(sep);
+
+            // If focus is in the menu
+            const nav = document.byTag("nav")[0];
+            const focus = document.activeElement;
+
+            // Clear it
+            if (nav.contains(focus)) focus.blur();
+
+            // Scroll the the separator
+            main.scrollTop = sep.offsetTop;
 
         });
 

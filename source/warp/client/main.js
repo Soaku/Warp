@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Bind events
     window.addEventListener("resize", resize);
+    window.addEventListener("popstate", refreshAPI);
 
     // Prepare the map
     generateMap();
