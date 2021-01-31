@@ -4,6 +4,7 @@ import std.conv;
 import std.json;
 import std.meta;
 import std.array;
+import std.typecons;
 import std.algorithm;
 
 import warp.user;
@@ -33,6 +34,7 @@ enum MapMode {
 }
 
 alias ColoredText = AliasSeq!(Color, string);
+alias Position = Tuple!(uint, "x", uint, "y");
 
 /// Type of the message sent
 enum MessageType {

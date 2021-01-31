@@ -103,7 +103,15 @@ function listenAPI(stream) {
 
     fetch("/api/event/" + stream, init)
         .then(response => response.text())
-        .then(parseAPI);
+        .then(text => {
+
+            // Unbind the stream
+            api.listenStream = "";
+
+            // Read the response
+            parseAPI(text);
+
+        });
 
 }
 

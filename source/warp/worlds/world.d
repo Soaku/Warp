@@ -15,6 +15,9 @@ shared final class World {
     /// Type of this world.
     Type type;
 
+    /// World seed
+    ulong seed;
+
     /// Owner of the world.
     User owner;
 
