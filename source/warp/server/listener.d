@@ -54,8 +54,10 @@ void start(ServerOptions options) {
         // Run the frames if there is a callback
         if (options.frameCallback) options.frameCallback();
 
+        // Ignore if there are no updates
+        if (ret <= 0) continue;
+
         // Update existing connections
-        if (ret > 0)
         foreach_reverse (i, ref connection; connections) {
 
             // Wait for data

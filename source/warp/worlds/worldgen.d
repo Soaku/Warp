@@ -56,14 +56,16 @@ void startWorldgen() {
 }
 
 /// Send a status update. Shouldn't be used if the job is finished.
-void updateStatus(string text) {
+void updateStatus(T...)(T status) {
+
+    import std.conv : text;
 
     with (Message)
     world.owner.sendEvent("worldgen",
         listen("worldgen"),
         setTheme(Color.grey),
         mapMode(MapMode.terrain),
-        addContent(text),
+        addContent(status.text),
     );
 
 }

@@ -11,9 +11,9 @@ WorldParams regularWorld(ulong seed) {
     params.seed = seed;
 
     // Get mountains
-    foreach (i; 0 .. params.random(1, 2, seed)) {
+    foreach (i; 0 .. params.random(1, 2, 0)) {
 
-        params.mountains ~= params.random(1, 3, seed + 1);
+        params.mountains ~= params.random(1, 3, i);
 
     }
 
