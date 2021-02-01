@@ -72,11 +72,13 @@ enum MessageType {
     mapPosition,
     // TODO
 
-    /// Change text of a map line. `[ubyte lineNumber, ColoredText[100] content]`
+    /// Change text of a map line. `[ubyte lineNumber, ColoredText[] content]`
+    ///
+    /// This, along with other map commands, sends the map scaled (to 25x15) by default, unless visiting `/map` (TODO)
     mapLineContent,
     // TODO
 
-    /// Change height of a map line. `[ubyte lineNumber, ubyte[100] height]`
+    /// Change height of a map line. `[ubyte lineNumber, ubyte[] height]`
     mapLineHeight,
     // TODO
 
@@ -97,6 +99,8 @@ enum MessageType {
 }
 
 /// Represents a message from the server to the client.
+///
+/// Considering changing the name to `Command`.
 struct Message {
 
     /// Type of the message

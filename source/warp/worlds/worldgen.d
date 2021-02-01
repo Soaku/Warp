@@ -1,5 +1,6 @@
 module warp.worlds.worldgen;
 
+import std.meta;
 import std.format;
 import std.random;
 import std.concurrency;
@@ -15,8 +16,11 @@ public {
     import std.concurrency : send;
 
     import warp.worlds.world;
+    import warp.worlds.params;
 
 }
+
+alias WorldData = AliasSeq!(shared World, const WorldParams);
 
 /// Currently built world.
 private shared World world;
@@ -33,14 +37,19 @@ void startWorldgen() {
         world = new shared World;
         world.owner = order[0];
         world.type = order[1];
-        world.seed = unpredictableSeed;
+
+        // Get a seed
+        const seed = unpredictableSeed!ulong;
 
         // Send feedback
-        format!"Building a new %s world with seed %s..."(order[1], world.seed)
+        format!"Building a new %s world with seed %s..."(world.type, seed)
             .updateStatus();
 
+        // Get params for the world
+        const params = newParams(order[1], seed);
+
         // Build the world
-        buildWorld();
+        buildWorld(params);
 
     }
 
@@ -60,8 +69,23 @@ void updateStatus(string text) {
 }
 
 /// Build the world
-void buildWorld() {
+private void buildWorld(const WorldParams params) {
 
-    world.generateHeight();
+    // Bundle the params
+    alias worldData = AliasSeq!(world, params);
+
+    worldData.generateHeight;
+
+}
+
+private WorldParams newParams(World.Type type, ulong seed) {
+
+    import warp.worlds.regular : regularWorld;
+
+    final switch (type) {
+
+        case World.Type.regular: return regularWorld(seed);
+
+    }
 
 }

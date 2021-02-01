@@ -144,7 +144,7 @@ struct APIData {
     /// Get the map
     Element map() const {
 
-        return elem!("div", q{ id="map-contents" })("");
+        return elem!("a", q{ id="map-contents" href="/map" title="Open the map" });
 
     }
 

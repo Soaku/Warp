@@ -1,6 +1,10 @@
 module warp.worlds.world;
 
+import std.typecons;
+
 import warp.user;
+import warp.structs;
+import warp.worlds.params;
 
 /// Represents a world
 shared final class World {
@@ -14,9 +18,6 @@ shared final class World {
 
     /// Type of this world.
     Type type;
-
-    /// World seed
-    ulong seed;
 
     /// Owner of the world.
     User owner;
