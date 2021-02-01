@@ -32,7 +32,7 @@ shared final class World {
 
     }
 
-    /// Get neighbor of area
+    /// Get neighbor of area.
     /// Params:
     ///     position = Position to check
     ///     direction = Side the neighbor is located on, 0 top, 1 right, 2 bottom, 3 left.
@@ -70,6 +70,43 @@ shared final class World {
         }
 
         return Position(posX, posY);
+
+    }
+
+    /// Get all API messages for the height map, scaled to 25x15.
+    Message[] heightAPI() {
+
+        enum mapHeight = areas.length;
+        enum chunkLength = mapHeight / 15;
+
+        Message[] messages;
+
+        for (uint i = 0; i < mapHeight; i += chunkLength) {
+
+            messages ~= rowHeightAPI(i);
+
+        }
+
+        return messages;
+
+    }
+
+    /// Get row height as an API message, scaled to 25:100.
+    Message rowHeightAPI(uint row) {
+
+        import std.json : JSONValue;
+
+        enum mapWidth = areas[row].length;
+        enum chunkLength = mapWidth / 25;
+
+        auto msg = Message(MessageType.mapLineHeight);
+        for (uint i = 0; i < mapWidth; i += chunkLength) {
+
+            msg.content ~= JSONValue(areas[row][i].height);
+
+        }
+
+        return msg;
 
     }
 

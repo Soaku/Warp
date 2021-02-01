@@ -18,7 +18,7 @@ void generateHeight(WorldData worldData) {
 
     //worldData.heightNoise — make the terrain height more random, generate hills, change summit height.
 
-    debug debugHeight(worldData[0]);
+    updateStatus(worldData[0].heightAPI);
 
 }
 
@@ -148,24 +148,5 @@ private void placeMountains(shared World world, const WorldParams params, Positi
         else area.height = 12;
 
     }
-
-}
-
-private debug void debugHeight(shared World world) {
-
-    foreach (row; world.areas) {
-
-        string cont = "";
-        foreach (column; row) {
-
-            import std.conv;
-            cont ~= text(column.height, " ");
-
-        }
-
-        updateStatus(cont);
-
-    }
-
 
 }

@@ -60,13 +60,26 @@ void updateStatus(T...)(T status) {
 
     import std.conv : text;
 
-    with (Message)
-    world.owner.sendEvent("worldgen",
-        listen("worldgen"),
-        setTheme(Color.grey),
-        mapMode(MapMode.terrain),
-        addContent(status.text),
-    );
+    updateStatus([
+        Message.addContent(status.text)
+    ]);
+
+}
+
+/// Send a status update with a message list.
+void updateStatus(Message[] messages) {
+
+    with (Message) {
+
+        enum arr = [
+            listen("worldgen"),
+            setTheme(Color.grey),
+            mapMode(MapMode.terrain),
+        ];
+
+        world.owner.sendEvent("worldgen", arr ~ messages);
+
+    }
 
 }
 
