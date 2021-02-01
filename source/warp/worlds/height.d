@@ -139,8 +139,10 @@ private void placeMountains(shared World world, const WorldParams params, Positi
         // If there are neighbors
         if (neighborCount) {
 
+            import std.algorithm : max;
+
             // Set the height as the average of neighbors minus 1
-            area.height = heightSum / neighborCount - 1;
+            area.height = max(1, heightSum / neighborCount - 1);
 
         }
 

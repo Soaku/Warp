@@ -13,7 +13,7 @@ WorldParams regularWorld(ulong seed) {
     // Get mountains
     foreach (i; 0 .. params.random(1, 2, 0)) {
 
-        params.mountains ~= params.random(1, 3, i);
+        params.mountains ~= params.random(1, 5, i);
 
     }
 
