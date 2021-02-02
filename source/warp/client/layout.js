@@ -9,7 +9,7 @@ function resize() {
     map.style.height = height;
 
     // Update title height
-    map.querySelector("h1.title").style.lineHeight = height;
+    document.byID("area-name").style.lineHeight = height;
 
     // Update map text size
     let mapContent = document.byID("map-contents");

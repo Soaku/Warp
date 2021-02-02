@@ -9,15 +9,18 @@ import warp.worlds.worldgen;
 /// Generate terrain height for the given world.
 void generateHeight(WorldData worldData) {
 
+    // Mountains
     updateStatus("Building mountains...");
 
-    auto summits = worldData.generateMountains;
+    const summits = worldData.generateMountains;
     worldData.placeMountains(summits);
 
+    // Noise
     updateStatus("Adding terrain noise...");
 
-    //worldData.heightNoise — make the terrain height more random, generate hills, change summit height.
+    worldData.heightNoise;
 
+    // Send the resulting map
     updateStatus(worldData[0].heightAPI);
 
 }
@@ -87,7 +90,7 @@ private Position[] generateMountains(shared World world, const WorldParams param
 }
 
 /// Place mountains from list of summits.
-private void placeMountains(shared World world, const WorldParams params, Position[] summits) {
+private void placeMountains(shared World world, const WorldParams params, const Position[] summits) {
 
     import std.container : DList;
 
@@ -152,6 +155,75 @@ private void placeMountains(shared World world, const WorldParams params, Positi
 
         // There are none, assume a summit
         else area.height = 12;
+
+    }
+
+}
+
+/// Make the terrain height more random, generate hills, change summit height.
+private void heightNoise(shared World world, const WorldParams params) {
+
+    ubyte[100][2] mask;
+
+    foreach (y; 0..100) {
+
+        foreach (x; 0..100) {
+
+            ubyte count, sum;
+
+            // Get previous item in the row
+            if (x != 0) {
+                sum += mask[1][x - 1];
+                count++;
+            }
+
+            // Get previous item in the column
+            if (y != 0) {
+                sum += mask[0][x];
+                count++;
+            }
+
+            // Get previous item in diagonal
+            if (count == 2) {
+                sum += mask[0][x - 1];
+                count++;
+            }
+
+
+            // Top-left corner
+            if (count == 0) {
+
+                mask[1][x] = cast(ubyte) params.random(1, 4, 200);
+
+            }
+
+            // Other cases
+            else {
+
+                import std.math : round;
+                import std.algorithm : clamp;
+
+                // Get the average of those neighbors
+                const average = cast(int) round(cast(float) sum / count);
+
+                // Get a random value
+                const random = params.random(1, params.heightStability, 200 + y*100 + x);
+
+                // Modify the result based on the value, 3 = increment, 1 = decrement
+                const height = average + (random <= 3 ? random-2 : 0);
+
+                // Get the final height
+                mask[1][x] = cast(ubyte) clamp(height, 1, 4);
+
+            }
+
+            // Apply the mask
+            world.areas[y][x].height = world.areas[y][x].height + mask[1][x];
+
+        }
+
+        // Shift rows
+        mask[0] = mask[1];
 
     }
 

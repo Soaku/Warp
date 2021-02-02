@@ -17,6 +17,9 @@ struct WorldParams {
     /// Min and max distance between summits of a single mountain.
     size_t[2] summitDistance;
 
+    /// The higher the value, the lower the chance to change height value of a location. Minimum 3.
+    uint heightStability = 10;
+
     /// Get a random number in range
     T random(T)(T min, T max, ulong seedOffset) const {
 
