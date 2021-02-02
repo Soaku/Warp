@@ -318,6 +318,15 @@ function readAPIMessage(message) {
 
         }
 
+        // Update height map
+        case "mapLineHeight": {
+
+            // Write the height
+            map.height[message[1]] = message[2];
+            break;
+
+        }
+
         // Set page theme
         case "setTheme": {
 

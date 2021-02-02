@@ -14,6 +14,9 @@ struct WorldParams {
     /// value.
     size_t[] mountains;
 
+    /// Min and max distance between summits of a single mountain.
+    size_t[2] summitDistance;
+
     /// Get a random number in range
     T random(T)(T min, T max, ulong seedOffset) const {
 

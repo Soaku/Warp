@@ -67,11 +67,6 @@ enum MessageType {
     mapMode,
     // TODO
 
-    /// Change the user position on the map. `[ubyte x, ubyte y]`
-    /// If not present, map should be zoomed out.
-    mapPosition,
-    // TODO
-
     /// Change text of a map line. `[ubyte lineNumber, ColoredText[] content]`
     ///
     /// This, along with other map commands, sends the map scaled (to 25x15) by default, unless visiting `/map` (TODO)
@@ -196,11 +191,7 @@ struct Message {
         }
 
         /// Change map line height
-        ///
-        /// Line number is `0..100`, height[n] is `1..11`
-        static mapLineHeight(ubyte lineNumber, ubyte[] height)
-        in (height.length == 100)
-        do {
+        static mapLineHeight(uint lineNumber, uint[] height) {
 
             return Message(MessageType.mapLineHeight, lineNumber, height);
 

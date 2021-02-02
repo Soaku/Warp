@@ -62,7 +62,7 @@ string htmlTemplate(const Context context, const APIData api) {
                     // Map
                     elem!("div", q{ id="map" })(
 
-                        "WARP".elem!("h1", q{ class="title" }),
+                        "WARP".elem!("h1", q{ id="area-name" class="title" }),
 
                         // Generate the map
                         api.map,

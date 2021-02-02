@@ -6,6 +6,11 @@ const portal = new function() {
     this.maxRadius = 7.5;
     this.fill = 0;  // 0–10
 
+    // Drawing
+    this.interval = null;
+    this.step = 0;  // 0–360 in degrees, used for sin() transitions
+    this.particles = [];
+
     this.update = () => {
 
         /// Animate a property
@@ -87,8 +92,8 @@ const portal = new function() {
             if (this.fill === 0) {
 
                 // Clear the interval
-                clearInterval(map.portal);
-                map.portal = null;
+                clearInterval(portal.interval);
+                portal.interval = null;
 
             }
 
@@ -130,7 +135,7 @@ function generatePortalParticles() {
 
     for (let i = 0; i < 20; i++) {
 
-        map.portalParticles.push(new PortalParticle);
+        portal.particles.push(new PortalParticle);
 
     }
 
@@ -146,17 +151,33 @@ function drawPortal() {
 
     // Draw filling
     const trans = document.byID("transition-helper");
-    trans.style.opacity = portal.fill / 10;
+    const fill = portal.fill / 10;
+    trans.style.opacity = fill;
 
-    // Ignore the rest if not displaying
-    if (!portal.display) return;
+    // Get the title
+    const areaName = document.byID("area-name");
+
+    // If not displaying
+    if (!portal.display) {
+
+        // Hide the title
+        areaName.style.opacity = 0;
+
+        // Stop the rest
+        return;
+
+    }
+
+    // Show the title
+    areaName.classList.add("title");
+    areaName.style.opacity = 1 - fill;
 
     // Get transition change
-    const change = Math.sin(map.step * Math.PI / 180);
-    map.step = (map.step + 5) % 360;
+    const change = Math.sin(portal.step * Math.PI / 180);
+    portal.step = (portal.step + 5) % 360;
 
     // Update particle params
-    for (let particle of map.portalParticles) {
+    for (let particle of portal.particles) {
 
         particle.angle = (particle.angle + portal.speed) % 360;
         particle.distance = Math.max(portal.minParticleDistance, particle.initialDistance);
@@ -164,11 +185,10 @@ function drawPortal() {
     }
 
     // Also update title position
-    const title = document.byClass("title")[0];
-    if (title !== undefined) {
+    if (areaName !== undefined) {
 
-        title.style.left = change*5 + "px";
-        title.style.top = Math.cos(map.step * Math.PI / 180)*5 + "px";
+        areaName.style.left = change*5 + "px";
+        areaName.style.top = Math.cos(portal.step * Math.PI / 180)*5 + "px";
 
     }
 
@@ -186,7 +206,7 @@ function drawPortal() {
         drawCircle(cell, map.center, Math.min(portal.maxRadius, map.size[1]/3 + change/2), 1.00);
 
         // Draw the particles
-        for (let particle of map.portalParticles) {
+        for (let particle of portal.particles) {
 
             drawCircle(cell, particle.getPosition(), 2 + change, 1);
 
@@ -200,7 +220,7 @@ function drawPortal() {
 function resetCell(cell) {
 
     cell[2].classList = ["c"];
-    cell[2].style.opacity = "";
+    cell[2].removeAttribute("style");
 
 }
 

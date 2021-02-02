@@ -9,10 +9,11 @@ const map = new function() {
     this.scaleX = this.size[1] / this.size[0];
     this.mode = 0
 
-    // Start the portal drawing interval
-    this.portal = null;
-    this.step = 0;  // 0–360 in degrees, used for sin() transitions
-    this.portalParticles = [];
+    // Portal height
+    this.height = [];
+    for (let i = 0; i < 15; i++) {
+        this.height.push([]);
+    }
 
 }
 
@@ -76,10 +77,10 @@ function updateMapMode(newMode) {
     if (map.mode <= 1) {
 
         // Unless there is already a portal spawned
-        if (!map.portal) {
+        if (!portal.interval) {
 
             // Create one
-            map.portal = setInterval(drawPortal, 100);
+            portal.interval = setInterval(drawPortal, 100);
 
         }
 
@@ -95,5 +96,20 @@ function updateMapMode(newMode) {
 
 /// Draw the map
 function drawMap() {
+
+    const mapContents = document.byID("map-contents");
+    const areaName = document.byID("area-name");
+    areaName.removeAttribute("style");
+    areaName.className = "";
+
+    for (let y = 0; y < 15; y++)
+    for (let x = 0; x < 25; x++) {
+
+        const elem = mapContents.children[y].children[x];
+        const height = map.height[y][x] - 1;
+        elem.style.opacity = "1";
+        elem.style.backgroundColor = "rgba(160, 160, 160, " + (height/15) + ")";
+
+    }
 
 }

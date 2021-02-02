@@ -77,13 +77,13 @@ shared final class World {
     Message[] heightAPI() {
 
         enum mapHeight = areas.length;
-        enum chunkLength = mapHeight / 15;
+        enum chunkLength = cast(uint) mapHeight / 15;
 
         Message[] messages;
 
-        for (uint i = 0; i < mapHeight; i += chunkLength) {
+        foreach (uint i; 0..15) {
 
-            messages ~= rowHeightAPI(i);
+            messages ~= rowHeightAPI(i * chunkLength, i);
 
         }
 
@@ -92,21 +92,21 @@ shared final class World {
     }
 
     /// Get row height as an API message, scaled to 25:100.
-    Message rowHeightAPI(uint row) {
+    Message rowHeightAPI(uint row, uint displayIndex) {
 
         import std.json : JSONValue;
 
         enum mapWidth = areas[row].length;
         enum chunkLength = mapWidth / 25;
 
-        auto msg = Message(MessageType.mapLineHeight);
+        uint[] res;
         for (uint i = 0; i < mapWidth; i += chunkLength) {
 
-            msg.content ~= JSONValue(areas[row][i].height);
+            res ~= areas[row][i].height;
 
         }
 
-        return msg;
+        return Message.mapLineHeight(displayIndex, res);
 
     }
 

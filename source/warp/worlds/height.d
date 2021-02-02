@@ -62,7 +62,8 @@ private Position[] generateMountains(shared World world, const WorldParams param
                 angle += params.random(-5, 5, 100 + i*30 + j) * PI / 180;
 
                 // Generate random distance
-                const distance = params.random(8, 15, 125 + i*30 + j).to!float;
+                const range = params.summitDistance;
+                const distance = params.random(range[0], range[1], 125 + i*30 + j).to!float;
 
                 // Get the position
                 const positionX = to!int(lastPosition.x.to!int + angle.sin*distance);
@@ -81,8 +82,6 @@ private Position[] generateMountains(shared World world, const WorldParams param
         }
 
     }
-
-    debug updateStatus("Built a few: ", result);
 
     return result;
 

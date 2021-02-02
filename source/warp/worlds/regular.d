@@ -11,6 +11,7 @@ WorldParams regularWorld(ulong seed) {
     params.seed = seed;
 
     // Get mountains
+    params.summitDistance = [8, 20];
     foreach (i; 0 .. params.random(1, 2, 0)) {
 
         params.mountains ~= params.random(1, 5, i);
