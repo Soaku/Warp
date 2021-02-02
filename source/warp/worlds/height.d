@@ -50,7 +50,6 @@ private Position[] generateMountains(shared World world, const WorldParams param
 
                 result ~= lastPosition;
 
-
             }
 
             // Other summits
@@ -59,7 +58,7 @@ private Position[] generateMountains(shared World world, const WorldParams param
                 import std.conv : to;
 
                 // Change the angle
-                angle += params.random(-5, 5, 100 + i*30 + j) * PI / 180;
+                angle += params.random(-30, 30, 100 + i*30 + j) * PI / 180;
 
                 // Generate random distance
                 const range = params.summitDistance;
@@ -88,11 +87,11 @@ private Position[] generateMountains(shared World world, const WorldParams param
 }
 
 /// Place mountains from list of summits.
-///
-/// This function doesn't use any randomness.
 private void placeMountains(shared World world, const WorldParams params, Position[] summits) {
 
     import std.container : DList;
+
+    uint seed = 160;
 
     // Add each summit to the queue
     auto queue = DList!Position(summits);
@@ -140,8 +139,14 @@ private void placeMountains(shared World world, const WorldParams params, Positi
 
             import std.algorithm : max;
 
+            // Get the average height
+            const uint average = heightSum / neighborCount;
+
+            // Set a chance to lower
+            bool lower = params.random(1, 6, seed++) <= average;
+
             // Set the height as the average of neighbors minus 1
-            area.height = max(1, heightSum / neighborCount - 1);
+            area.height = max(1, average - lower);
 
         }
 
